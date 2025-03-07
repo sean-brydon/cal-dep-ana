@@ -43,17 +43,11 @@ jobs:
         run: |
           git clone --depth 1 --branch ${{ github.event.inputs.branch }} https://github.com/calcom/cal.com.git cal-repo
 
-      - name: Install dependencies
+      - name: Install and run skott directly
         if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
         run: |
           cd cal-repo
-          npm install --no-package-lock --no-save skott
-
-      - name: Run dependency analysis
-        if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
-        run: |
-          cd cal-repo
-          npx skott -m graph > raw.out
+          npx --yes skott@latest -m graph > raw.out
 
       - name: Parse results and generate HTML
         if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
