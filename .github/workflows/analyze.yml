@@ -82,3 +82,31 @@ jobs:
         with:
           folder: results
           target-folder: results
+
+      - name: Get repository name
+        id: repo-name
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "name=$REPO_NAME" >> $GITHUB_OUTPUT
+
+      - name: Log results URL
+        run: |
+          BRANCH_SLUG="${{ steps.check-cache.outputs.branch_slug }}"
+          if [ -z "$BRANCH_SLUG" ]; then
+            BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+          fi
+
+          REPO_OWNER="${GITHUB_REPOSITORY_OWNER}"
+          REPO_NAME="${{ steps.repo-name.outputs.name }}"
+
+          echo "============================================================="
+          echo "✅ Analysis complete!"
+          echo "📊 Results are available at:"
+          echo "https://${REPO_OWNER}.github.io/${REPO_NAME}/results/${BRANCH_SLUG}/"
+          echo "============================================================="
+
+          # Also add to GitHub step summary
+          echo "## Circular Dependency Analysis Complete" >> $GITHUB_STEP_SUMMARY
+          echo "Analysis of branch **${{ github.event.inputs.branch }}** is now available." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 [View Results](https://${REPO_OWNER}.github.io/${REPO_NAME}/results/${BRANCH_SLUG}/)" >> $GITHUB_STEP_SUMMARY
