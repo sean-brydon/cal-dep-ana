@@ -1,0 +1,86 @@
+# .github/workflows/analyze.yml
+name: Analyze Cal.com Dependencies
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Cal.com branch to analyze"
+        required: true
+        default: "main"
+      force_refresh:
+        description: "Force refresh (ignore cache)"
+        required: false
+        default: "false"
+        type: boolean
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout analyzer repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Check cache
+        id: check-cache
+        if: ${{ github.event.inputs.force_refresh != 'true' }}
+        run: |
+          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+          if [ -f "results/${BRANCH_SLUG}/index.html" ]; then
+            echo "cache_hit=true" >> $GITHUB_OUTPUT
+          else
+            echo "cache_hit=false" >> $GITHUB_OUTPUT
+          fi
+          echo "branch_slug=${BRANCH_SLUG}" >> $GITHUB_OUTPUT
+
+      - name: Clone Cal.com repository
+        if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
+        run: |
+          git clone --depth 1 --branch ${{ github.event.inputs.branch }} https://github.com/calcom/cal.com.git cal-repo
+
+      - name: Install dependencies
+        if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
+        run: |
+          cd cal-repo
+          npm install --no-package-lock --no-save skott
+
+      - name: Run dependency analysis
+        if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
+        run: |
+          cd cal-repo
+          npx skott -m graph > raw.out
+
+      - name: Parse results and generate HTML
+        if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
+        run: |
+          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+          mkdir -p results/${BRANCH_SLUG}
+          node src/parse-results.js cal-repo/raw.out ${{ github.event.inputs.branch }} results/${BRANCH_SLUG}/index.html
+
+      - name: Create metadata file
+        run: |
+          BRANCH_SLUG="${{ steps.check-cache.outputs.branch_slug || steps.check-cache.outputs.branch_slug }}"
+          if [ -z "$BRANCH_SLUG" ]; then
+            BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+          fi
+
+          echo "{
+            \"branch\": \"${{ github.event.inputs.branch }}\",
+            \"analyzed_at\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\",
+            \"workflow_run\": \"${{ github.run_id }}\"
+          }" > results/${BRANCH_SLUG}/metadata.json
+
+      - name: Update index of analyses
+        run: |
+          node src/update-index.js
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: results
+          target-folder: results
