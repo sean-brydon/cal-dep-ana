@@ -5,12 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cal.com Dependency Analyzer</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Add Clerk script -->
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
 </head>
 <body>
   <header>
     <div class="container">
       <h1>Cal.com Dependency Analyzer</h1>
       <p>View circular dependencies in different branches of Cal.com</p>
+      <!-- Add Clerk auth elements -->
+      <div id="auth-section">
+        <div id="sign-in-button"></div>
+        <div id="user-button"></div>
+      </div>
     </div>
   </header>
 
@@ -46,5 +53,104 @@
   </footer>
 
   <script src="app.js"></script>
+  
+  <!-- Add Clerk initialization and auto-start analysis script -->
+  <script>
+    // Initialize Clerk with your publishable key
+    const clerk = window.Clerk.init({
+      publishableKey: 'pk_test_ZXhjaXRlZC1saW9uZXNzLTIzLmNsZXJrLmFjY291bnRzLmRldiQ' // Replace with your actual Clerk publishable key
+    });
+
+    // DOM elements
+    const analyzeForm = document.getElementById('analyzeForm');
+    const analysisStatus = document.getElementById('analysisStatus');
+    
+    // Wait for Clerk to load
+    clerk.load()
+      .then(async () => {
+        // Mount the sign-in and user button components
+        if (document.getElementById('sign-in-button')) {
+          clerk.mountSignIn(document.getElementById('sign-in-button'));
+        }
+        
+        if (document.getElementById('user-button')) {
+          clerk.mountUserButton(document.getElementById('user-button'));
+        }
+        
+        // Set up auth state change listener
+        clerk.addListener(({ user }) => {
+          if (user) {
+            // User is signed in
+            console.log('User signed in:', user.id);
+            
+            // Check if user has GitHub connection
+            checkGitHubConnection(user);
+          } else {
+            // User is signed out
+            console.log('User signed out');
+            
+            // Hide analysis status if showing
+            analysisStatus.classList.add('hidden');
+          }
+        });
+        
+        // Check initial auth state
+        if (clerk.user) {
+          checkGitHubConnection(clerk.user);
+        }
+      })
+      .catch((error) => {
+        console.error('Error initializing Clerk:', error);
+      });
+    
+    // Check if user has connected GitHub account
+    async function checkGitHubConnection(user) {
+      try {
+        // Get user's OAuth accounts
+        const oauthAccounts = user.externalAccounts;
+        
+        // Find GitHub account if connected
+        const githubAccount = oauthAccounts.find(account => account.provider === 'github');
+        
+        if (githubAccount) {
+          console.log('GitHub account connected:', githubAccount);
+          
+          // Get GitHub token
+          const token = await user.getToken({ template: 'github' });
+          
+          if (token) {
+            console.log('GitHub token obtained');
+            
+            // Auto-start analysis
+            autoStartAnalysis();
+          } else {
+            console.warn('GitHub token not available');
+            alert('GitHub token not available. Please reconnect your GitHub account.');
+          }
+        } else {
+          console.warn('GitHub account not connected');
+          // Optionally prompt user to connect GitHub
+          if (confirm('Please connect your GitHub account to use this tool. Connect now?')) {
+            // Redirect to account connection page
+            clerk.openUserProfile({ tab: 'account-connections' });
+          }
+        }
+      } catch (error) {
+        console.error('Error checking GitHub connection:', error);
+      }
+    }
+    
+    // Auto-start analysis when logged in with GitHub
+    function autoStartAnalysis() {
+      // Set default branch to 'main'
+      document.getElementById('branch').value = 'main';
+      
+      // Show analysis status
+      analysisStatus.classList.remove('hidden');
+      
+      // Submit the form
+      analyzeForm.submit();
+    }
+  </script>
 </body>
 </html>
