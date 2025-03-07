@@ -13,6 +13,11 @@ on:
         required: false
         default: "false"
         type: boolean
+      max_files:
+        description: "Maximum number of files to analyze (0 for all)"
+        required: false
+        default: "5000"
+        type: number
 
 jobs:
   analyze:
@@ -43,11 +48,10 @@ jobs:
         run: |
           git clone --depth 1 --branch ${{ github.event.inputs.branch }} https://github.com/calcom/cal.com.git cal-repo
 
-      - name: Install and run skott directly
+      - name: Run custom dependency analysis
         if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
         run: |
-          cd cal-repo
-          npx --yes skott@latest -m graph > raw.out
+          node src/analyze-dependencies.js cal-repo cal-repo/raw.out ${{ github.event.inputs.max_files }}
 
       - name: Parse results and generate HTML
         if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
@@ -58,7 +62,7 @@ jobs:
 
       - name: Create metadata file
         run: |
-          BRANCH_SLUG="${{ steps.check-cache.outputs.branch_slug || steps.check-cache.outputs.branch_slug }}"
+          BRANCH_SLUG="${{ steps.check-cache.outputs.branch_slug }}"
           if [ -z "$BRANCH_SLUG" ]; then
             BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
           fi
