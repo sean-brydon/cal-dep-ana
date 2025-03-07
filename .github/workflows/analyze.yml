@@ -31,11 +31,22 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Debug information
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Repository Owner: $GITHUB_REPOSITORY_OWNER"
+          echo "Branch to analyze: ${{ github.event.inputs.branch }}"
+          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/\//-/g' | sed 's/[^a-zA-Z0-9\-]/-/g')
+          echo "Branch slug: $BRANCH_SLUG"
+          echo "Expected results path: results/${BRANCH_SLUG}/index.html"
+          echo "GitHub Pages URL: https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/results/${BRANCH_SLUG}/"
+
       - name: Check cache
         id: check-cache
         if: ${{ github.event.inputs.force_refresh != 'true' }}
         run: |
-          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+          # Improved branch slugification
+          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/\//-/g' | sed 's/[^a-zA-Z0-9\-]/-/g')
           if [ -f "results/${BRANCH_SLUG}/index.html" ]; then
             echo "cache_hit=true" >> $GITHUB_OUTPUT
           else
@@ -56,7 +67,8 @@ jobs:
       - name: Parse results and generate HTML
         if: ${{ steps.check-cache.outputs.cache_hit != 'true' }}
         run: |
-          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+          # Improved branch slugification
+          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/\//-/g' | sed 's/[^a-zA-Z0-9\-]/-/g')
           mkdir -p results/${BRANCH_SLUG}
           node src/parse-results.js cal-repo/raw.out ${{ github.event.inputs.branch }} results/${BRANCH_SLUG}/index.html
 
@@ -64,7 +76,8 @@ jobs:
         run: |
           BRANCH_SLUG="${{ steps.check-cache.outputs.branch_slug }}"
           if [ -z "$BRANCH_SLUG" ]; then
-            BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+            # Improved branch slugification
+            BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/\//-/g' | sed 's/[^a-zA-Z0-9\-]/-/g')
           fi
 
           echo "{
@@ -76,6 +89,11 @@ jobs:
       - name: Update index of analyses
         run: |
           node src/update-index.js
+
+      - name: List files before deployment
+        run: |
+          echo "Files in results directory:"
+          find results -type f | sort
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
@@ -93,7 +111,8 @@ jobs:
         run: |
           BRANCH_SLUG="${{ steps.check-cache.outputs.branch_slug }}"
           if [ -z "$BRANCH_SLUG" ]; then
-            BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/[^a-zA-Z0-9]/-/g')
+            # Improved branch slugification
+            BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/\//-/g' | sed 's/[^a-zA-Z0-9\-]/-/g')
           fi
 
           REPO_OWNER="${GITHUB_REPOSITORY_OWNER}"
@@ -110,3 +129,15 @@ jobs:
           echo "Analysis of branch **${{ github.event.inputs.branch }}** is now available." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🔗 [View Results](https://${REPO_OWNER}.github.io/${REPO_NAME}/results/${BRANCH_SLUG}/)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Verify deployment
+        run: |
+          BRANCH_SLUG=$(echo "${{ github.event.inputs.branch }}" | sed 's/\//-/g' | sed 's/[^a-zA-Z0-9\-]/-/g')
+          REPO_OWNER="${GITHUB_REPOSITORY_OWNER}"
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+
+          echo "Waiting for GitHub Pages deployment to complete..."
+          sleep 30  # Give GitHub Pages some time to deploy
+
+          echo "Deployment should be available at:"
+          echo "https://${REPO_OWNER}.github.io/${REPO_NAME}/results/${BRANCH_SLUG}/"
