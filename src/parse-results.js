@@ -134,6 +134,11 @@ function generateHTML(circularDeps, totalDeps, branch) {
   searchTerm: '',
   directoryFilter: '',
   
+  init() {
+    this.$watch('searchTerm', () => this.filterDependencies());
+    this.$watch('directoryFilter', () => this.filterDependencies());
+  },
+  
   openModal(depId) {
     const dep = this.getDependency(depId);
     if (!dep) return;
@@ -164,9 +169,20 @@ function generateHTML(circularDeps, totalDeps, branch) {
   
   isVisible(dep) {
     if (!dep) return false;
-    const matchesSearch = !this.searchTerm || dep.textContent.toLowerCase().includes(this.searchTerm.toLowerCase());
-    const matchesDirectory = !this.directoryFilter || (dep.getAttribute('data-directories') || '').split(',').includes(this.directoryFilter);
+    const searchTerm = this.searchTerm.toLowerCase();
+    const matchesSearch = !searchTerm || dep.textContent.toLowerCase().includes(searchTerm);
+    const matchesDirectory = !this.directoryFilter || dep.getAttribute('data-directories').split(',').includes(this.directoryFilter);
     return matchesSearch && matchesDirectory;
+  },
+  
+  filterDependencies() {
+    document.querySelectorAll('.dependency').forEach(dep => {
+      if (this.isVisible(dep)) {
+        dep.style.display = '';
+      } else {
+        dep.style.display = 'none';
+      }
+    });
   }
 }">
   <header>
@@ -225,42 +241,40 @@ function generateHTML(circularDeps, totalDeps, branch) {
                 code: file.code.replace(/"/g, "&quot;"),
               }))
             ).replace(/"/g, "&quot;")}"
-            x-show="isVisible($el)"
+            x-show.transition.opacity.duration.300ms="isVisible($el)"
           >
             <div class="dependency-header">
               <span>Circular Dependency #${dep.id}</span>
               <div class="dependency-actions">
                 <button class="btn btn-small open-details" @click="openModal(${
                   dep.id
-                })">Open Details</button>
+                })">View Details</button>
                 <span class="file-count">${fileCount} files</span>
               </div>
             </div>
-            ${dep.files
-              .map(
-                (file) => `
-                <div class="file-path">
-                  ${file.path}
-                </div>
-              `
-              )
-              .join("")}
-            <div class="cycle-visualization">
+            
+            <!-- Default view showing the dependency chain -->
+            <div class="dependency-chain">
               ${dep.files
                 .map(
                   (file, index) => `
-                ${file.path}
-                ${
-                  index < dep.files.length - 1
-                    ? '<span class="arrow">→</span>'
-                    : '<span class="arrow">→</span>'
-                }
+                <div class="chain-item">
+                  <div class="file-path">
+                    <div class="file-name">${file.path}</div>
+                    <div class="file-preview">Line ${file.lineNumber}: ${
+                    file.code
+                  }</div>
+                  </div>
+                  ${
+                    index < dep.files.length - 1
+                      ? '<div class="chain-arrow">↓</div>'
+                      : ""
+                  }
+                </div>
               `
                 )
                 .join("")}
-              ${dep.files[0].path}
             </div>
-            <div class="graph-container" id="graph-${dep.id}"></div>
           </div>
         `;
           })
@@ -304,28 +318,63 @@ function generateHTML(circularDeps, totalDeps, branch) {
           <div class="dependency-files">
             <h3>Circular Dependency Chain</h3>
             <div class="cycle-visualization">
-              <template x-for="(file, index) in currentDep.files" :key="index">
-                <span>
-                  <span x-text="file.path"></span>
-                  <span class="arrow" x-show="index < currentDep.files.length - 1">→</span>
-                </span>
-              </template>
-              <span x-text="currentDep.files[0].path"></span>
+              ${currentDep.files
+                .map(
+                  (file, index) => `
+                ${file.path}
+                ${
+                  index < currentDep.files.length - 1
+                    ? '<span class="arrow">→</span>'
+                    : '<span class="arrow">→</span>'
+                }
+              `
+                )
+                .join("")}
+              ${currentDep.files[0].path}
             </div>
             
-            <h3 class="mt-4">Import Details</h3>
-            <template x-for="(file, index) in currentDep.files" :key="index">
-              <div class="dependency-detail">
-                <div class="detail-header">
-                  <span x-text="file.path + ' → ' + currentDep.files[(index + 1) % currentDep.files.length].path"></span>
-                </div>
-                <template x-if="currentDep.importDetails[index]">
-                  <div class="detail-code">
-                    <pre><code class="language-typescript" x-text="'// Line ' + currentDep.importDetails[index].lineNumber + '\n' + currentDep.importDetails[index].code"></code></pre>
+            <h3 class="mt-4">Detailed Import Analysis</h3>
+            ${currentDep.files
+              .map((file, index) => {
+                const nextFile =
+                  currentDep.files[(index + 1) % currentDep.files.length];
+                const importDetail = currentDep.importDetails.find(
+                  (d) => d.source === file.path && d.target === nextFile.path
+                );
+
+                return `
+                <div class="dependency-detail">
+                  <div class="detail-header">
+                    <div class="detail-title">${file.path} → ${
+                  nextFile.path
+                }</div>
+                    <div class="detail-meta">File: ${file.path}</div>
                   </div>
-                </template>
-              </div>
-            </template>
+                  ${
+                    importDetail
+                      ? `
+                    <div class="detail-code">
+                      <div class="code-header">
+                        <span class="line-number">Line ${
+                          importDetail.lineNumber
+                        }</span>
+                        <span class="file-type">${
+                          file.path.endsWith(".tsx")
+                            ? "TypeScript"
+                            : "JavaScript"
+                        }</span>
+                      </div>
+                      <pre><code class="language-typescript">${
+                        importDetail.code
+                      }</code></pre>
+                    </div>
+                  `
+                      : ""
+                  }
+                </div>
+              `;
+              })
+              .join("")}
           </div>
         </template>
       </div>
