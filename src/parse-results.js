@@ -128,38 +128,33 @@ function generateHTML(circularDeps, totalDeps, branch) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body x-data="{ 
+<body x-data='{
   modalOpen: false,
   currentDep: null,
-  searchTerm: '',
-  directoryFilter: '',
+  searchTerm: "",
+  directoryFilter: "",
   
   init() {
-    this.$watch('searchTerm', () => this.filterDependencies());
-    this.$watch('directoryFilter', () => this.filterDependencies());
+    this.filterDependencies();
   },
   
   openModal(depId) {
-    const dep = this.getDependency(depId);
+    const dep = document.querySelector(`.dependency[data-id="${depId}"]`);
     if (!dep) return;
     
     this.currentDep = {
       id: depId,
-      files: Array.from(dep.querySelectorAll('.file-path')).map(el => ({
+      files: Array.from(dep.querySelectorAll(".file-path")).map(el => ({
         path: el.textContent.trim()
       })),
-      importDetails: JSON.parse(dep.getAttribute('data-raw'))
+      importDetails: JSON.parse(dep.getAttribute("data-raw"))
     };
     this.modalOpen = true;
     this.$nextTick(() => {
-      this.$refs.modalContent.querySelectorAll('pre code').forEach(block => {
+      this.$refs.modalContent.querySelectorAll("pre code").forEach(block => {
         hljs.highlightElement(block);
       });
     });
-  },
-  
-  getDependency(id) {
-    return document.querySelector(\`.dependency[data-id="\${id}"]\`);
   },
   
   closeModal() {
@@ -168,23 +163,14 @@ function generateHTML(circularDeps, totalDeps, branch) {
   },
   
   isVisible(dep) {
-    if (!dep) return false;
+    if (!this.searchTerm && !this.directoryFilter) return true;
+    
     const searchTerm = this.searchTerm.toLowerCase();
     const matchesSearch = !searchTerm || dep.textContent.toLowerCase().includes(searchTerm);
-    const matchesDirectory = !this.directoryFilter || dep.getAttribute('data-directories').split(',').includes(this.directoryFilter);
+    const matchesDirectory = !this.directoryFilter || dep.getAttribute("data-directories").split(",").includes(this.directoryFilter);
     return matchesSearch && matchesDirectory;
-  },
-  
-  filterDependencies() {
-    document.querySelectorAll('.dependency').forEach(dep => {
-      if (this.isVisible(dep)) {
-        dep.style.display = '';
-      } else {
-        dep.style.display = 'none';
-      }
-    });
   }
-}">
+}' x-init="init">
   <header>
     <div class="container">
       <h1>Cal.com Circular Dependencies</h1>
@@ -233,15 +219,19 @@ function generateHTML(circularDeps, totalDeps, branch) {
           <div class="dependency" 
             data-id="${dep.id}" 
             data-directories="${directories.join(",")}"
-            data-raw="${JSON.stringify(
-              dep.files.map((file, index) => ({
-                source: file.path,
-                target: dep.files[(index + 1) % dep.files.length].path,
-                lineNumber: file.lineNumber,
-                code: file.code.replace(/"/g, "&quot;"),
-              }))
-            ).replace(/"/g, "&quot;")}"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            data-raw="${JSON.stringify(dep.files.map((file, index) => ({
+              source: file.path,
+              target: dep.files[(index + 1) % dep.files.length].path,
+              lineNumber: file.lineNumber,
+              code: file.code.replace(/"/g, "&quot;"),
+            }))).replace(/"/g, "&quot;")}"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #${dep.id}</span>
