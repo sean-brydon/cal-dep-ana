@@ -315,66 +315,40 @@ function generateHTML(circularDeps, totalDeps, branch) {
       </div>
       <div class="modal-body">
         <template x-if="currentDep">
-          <div class="dependency-files">
-            <h3>Circular Dependency Chain</h3>
-            <div class="cycle-visualization">
-              ${currentDep.files
-                .map(
-                  (file, index) => `
-                ${file.path}
-                ${
-                  index < currentDep.files.length - 1
-                    ? '<span class="arrow">→</span>'
-                    : '<span class="arrow">→</span>'
-                }
-              `
-                )
-                .join("")}
-              ${currentDep.files[0].path}
+          <div class="modal-sections">
+            <div class="modal-section">
+              <h3>Circular Dependency Chain</h3>
+              <div class="cycle-visualization">
+                <template x-for="(file, index) in currentDep.files" :key="index">
+                  <span>
+                    <span x-text="file.path"></span>
+                    <span class="arrow" x-show="index < currentDep.files.length - 1">→</span>
+                  </span>
+                </template>
+                <span x-text="currentDep.files[0].path"></span>
+              </div>
             </div>
             
-            <h3 class="mt-4">Detailed Import Analysis</h3>
-            ${currentDep.files
-              .map((file, index) => {
-                const nextFile =
-                  currentDep.files[(index + 1) % currentDep.files.length];
-                const importDetail = currentDep.importDetails.find(
-                  (d) => d.source === file.path && d.target === nextFile.path
-                );
-
-                return `
+            <div class="modal-section">
+              <h3>Detailed Import Analysis</h3>
+              <template x-for="(file, index) in currentDep.files" :key="index">
                 <div class="dependency-detail">
                   <div class="detail-header">
-                    <div class="detail-title">${file.path} → ${
-                  nextFile.path
-                }</div>
-                    <div class="detail-meta">File: ${file.path}</div>
+                    <div class="detail-title" x-text="file.path + ' → ' + currentDep.files[(index + 1) % currentDep.files.length].path"></div>
+                    <div class="detail-meta" x-text="'File: ' + file.path"></div>
                   </div>
-                  ${
-                    importDetail
-                      ? `
+                  <template x-if="currentDep.importDetails[index]">
                     <div class="detail-code">
                       <div class="code-header">
-                        <span class="line-number">Line ${
-                          importDetail.lineNumber
-                        }</span>
-                        <span class="file-type">${
-                          file.path.endsWith(".tsx")
-                            ? "TypeScript"
-                            : "JavaScript"
-                        }</span>
+                        <span class="line-number" x-text="'Line ' + currentDep.importDetails[index].lineNumber"></span>
+                        <span class="file-type" x-text="file.path.endsWith('.tsx') ? 'TypeScript' : 'JavaScript'"></span>
                       </div>
-                      <pre><code class="language-typescript">${
-                        importDetail.code
-                      }</code></pre>
+                      <pre><code class="language-typescript" x-text="currentDep.importDetails[index].code"></code></pre>
                     </div>
-                  `
-                      : ""
-                  }
+                  </template>
                 </div>
-              `;
-              })
-              .join("")}
+              </template>
+            </div>
           </div>
         </template>
       </div>
