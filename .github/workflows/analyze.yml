@@ -26,6 +26,28 @@ jobs:
       - name: Checkout analyzer repo
         uses: actions/checkout@v3
 
+      - name: Fetch existing GitHub Pages content
+        run: |
+          # Create a temporary directory for the gh-pages branch
+          mkdir -p temp_gh_pages
+
+          # Try to fetch the existing gh-pages branch content
+          if git fetch origin gh-pages; then
+            git worktree add temp_gh_pages gh-pages
+            
+            # If results directory exists, copy it to the workspace
+            if [ -d "temp_gh_pages/results" ]; then
+              echo "Copying existing results directory..."
+              mkdir -p results
+              cp -r temp_gh_pages/results/* results/
+            fi
+            
+            # Clean up
+            git worktree remove temp_gh_pages
+          else
+            echo "No existing gh-pages branch found. Starting fresh."
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -100,6 +122,7 @@ jobs:
         with:
           folder: results
           target-folder: results
+          clean: false
 
       - name: Get repository name
         id: repo-name
@@ -141,3 +164,8 @@ jobs:
 
           echo "Deployment should be available at:"
           echo "https://${REPO_OWNER}.github.io/${REPO_NAME}/results/${BRANCH_SLUG}/"
+
+      - name: List files after deployment
+        run: |
+          echo "Files in results directory after deployment:"
+          find results -type f | sort

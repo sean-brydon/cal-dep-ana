@@ -63,19 +63,37 @@ function parseImports(filePath) {
   try {
     const content = fs.readFileSync(filePath, "utf8");
     const imports = [];
+    const lines = content.split("\n");
 
     // Match ES6 imports
     const es6ImportRegex = /import\s+(?:[\w*{}\s,]+from\s+)?['"]([^'"]+)['"]/g;
     let match;
-    while ((match = es6ImportRegex.exec(content)) !== null) {
-      imports.push(match[1]);
-    }
 
-    // Match require statements
-    const requireRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
-    while ((match = requireRegex.exec(content)) !== null) {
-      imports.push(match[1]);
-    }
+    // Process each line to capture line numbers and actual code
+    lines.forEach((line, lineNumber) => {
+      // Reset regex for each line
+      es6ImportRegex.lastIndex = 0;
+
+      while ((match = es6ImportRegex.exec(line)) !== null) {
+        imports.push({
+          path: match[1],
+          lineNumber: lineNumber + 1,
+          code: line.trim(),
+        });
+      }
+
+      // Match require statements
+      const requireRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+      requireRegex.lastIndex = 0;
+
+      while ((match = requireRegex.exec(line)) !== null) {
+        imports.push({
+          path: match[1],
+          lineNumber: lineNumber + 1,
+          code: line.trim(),
+        });
+      }
+    });
 
     return imports;
   } catch (err) {
@@ -183,31 +201,38 @@ function resolveImport(importPath, currentFile, filePathMap) {
 // Build dependency graph
 function buildDependencyGraph(files, filePathMap) {
   const graph = {};
+  const importDetails = {}; // Store import details for each dependency
 
   files.forEach((file) => {
     const relativePath = path.relative(repoDir, file).replace(/\\/g, "/");
     graph[relativePath] = [];
+    importDetails[relativePath] = {};
 
     const imports = parseImports(file);
-    imports.forEach((importPath) => {
-      const resolvedPath = resolveImport(importPath, file, filePathMap);
+    imports.forEach((importInfo) => {
+      const resolvedPath = resolveImport(importInfo.path, file, filePathMap);
       if (resolvedPath) {
-        const relativeImportPath = path
+        const resolvedRelativePath = path
           .relative(repoDir, resolvedPath)
           .replace(/\\/g, "/");
-        if (relativePath !== relativeImportPath) {
-          // Avoid self-references
-          graph[relativePath].push(relativeImportPath);
+        graph[relativePath].push(resolvedRelativePath);
+
+        // Store import details for this dependency
+        if (!importDetails[relativePath][resolvedRelativePath]) {
+          importDetails[relativePath][resolvedRelativePath] = {
+            lineNumber: importInfo.lineNumber,
+            code: importInfo.code,
+          };
         }
       }
     });
   });
 
-  return graph;
+  return { graph, importDetails };
 }
 
 // Find circular dependencies using Tarjan's algorithm
-function findCircularDependencies(graph) {
+function findCircularDependencies(graph, importDetails) {
   const visited = new Set();
   const stack = new Set();
   const cycles = [];
@@ -219,7 +244,32 @@ function findCircularDependencies(graph) {
       if (cycleStart !== -1) {
         const cycle = path.slice(cycleStart);
         cycle.push(node);
-        cycles.push(cycle);
+
+        // Add import details to the cycle
+        const cycleWithDetails = [];
+        for (let i = 0; i < cycle.length - 1; i++) {
+          const current = cycle[i];
+          const next = cycle[i + 1];
+
+          cycleWithDetails.push({
+            file: current,
+            importDetails: importDetails[current][next] || {
+              lineNumber: 0,
+              code: "Unknown import",
+            },
+          });
+        }
+
+        // Add the last file that completes the cycle
+        cycleWithDetails.push({
+          file: cycle[cycle.length - 1],
+          importDetails: importDetails[cycle[cycle.length - 1]][cycle[0]] || {
+            lineNumber: 0,
+            code: "Unknown import",
+          },
+        });
+
+        cycles.push(cycleWithDetails);
       }
       return;
     }
@@ -259,39 +309,44 @@ console.log("Creating file path map...");
 const filePathMap = createFilePathMap(files);
 
 console.log("Building dependency graph...");
-const graph = buildDependencyGraph(files, filePathMap);
+const { graph, importDetails } = buildDependencyGraph(files, filePathMap);
 
 console.log("Finding circular dependencies...");
-const circularDeps = findCircularDependencies(graph);
+const cycles = findCircularDependencies(graph, importDetails);
 
-console.log(`Found ${circularDeps.length} circular dependencies`);
+console.log(`Found ${cycles.length} circular dependencies`);
 
 // Format for output
-const formattedDeps = circularDeps.map((cycle, index) => {
+const formattedDeps = cycles.map((cycle, index) => {
   return {
     id: index + 1,
-    files: cycle,
+    files: cycle.map((item) => ({
+      path: item.file,
+      lineNumber: item.importDetails.lineNumber,
+      code: item.importDetails.code,
+    })),
   };
 });
 
-// Write raw output in a format similar to skott
-const rawOutput = `
- Running custom dependency analyzer
+// Create output
+const output = `
+Dependency Analysis Results
+==========================
 
- Processed ${files.length} files
+Processed ${files.length} files
 
- ✖ (${circularDeps.length}) circular dependencies found
+✖ (${cycles.length}) circular dependencies found
 
 ${formattedDeps
   .map(
-    (dep, index) => `
- ${index + 1}. 
-
-${dep.files.map((file) => ` -> ${file}`).join("\n")}
-`
+    (dep) => `${dep.id}.
+${dep.files
+  .map((file) => `-> ${file.path} (line ${file.lineNumber}): ${file.code}`)
+  .join("\n")}`
   )
-  .join("\n")}
+  .join("\n\n")}
 `;
 
-fs.writeFileSync(outputFile, rawOutput);
-console.log(`Raw output written to ${outputFile}`);
+// Write to file
+fs.writeFileSync(outputFile, output);
+console.log(`Results written to ${outputFile}`);

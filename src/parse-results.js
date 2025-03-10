@@ -42,9 +42,13 @@ function parseCircularDependencies(data) {
     }
 
     // Check if this is a file in the current dependency
-    const fileMatch = line.match(/^\s*-> (.+)$/);
+    const fileMatch = line.match(/^\s*-> (.+) \(line (\d+)\): (.+)$/);
     if (fileMatch && inDependency && currentDep) {
-      currentDep.files.push(fileMatch[1]);
+      currentDep.files.push({
+        path: fileMatch[1],
+        lineNumber: parseInt(fileMatch[2]),
+        code: fileMatch[3],
+      });
     }
   }
 
@@ -58,7 +62,10 @@ function parseCircularDependencies(data) {
 
 // Extract directory from file path
 function getDirectory(filePath) {
-  const parts = filePath.split("/");
+  // Handle both string paths and object paths
+  const path = typeof filePath === "string" ? filePath : filePath.path;
+
+  const parts = path.split("/");
   if (parts.length <= 1) return "root";
 
   // Return first two levels of directory for better grouping
@@ -115,6 +122,10 @@ function generateHTML(circularDeps, totalDeps, branch) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cal.com Circular Dependencies (${totalDeps}) - ${branch}</title>
   <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
 </head>
 <body>
   <header>
@@ -157,7 +168,9 @@ function generateHTML(circularDeps, totalDeps, branch) {
         ${circularDeps
           .map((dep) => {
             const fileCount = dep.files.length;
-            const directories = [...new Set(dep.files.map(getDirectory))];
+            const directories = [
+              ...new Set(dep.files.map((file) => getDirectory(file))),
+            ];
 
             return `
           <div class="dependency" data-id="${
@@ -168,13 +181,27 @@ function generateHTML(circularDeps, totalDeps, branch) {
               <span class="file-count">${fileCount} files</span>
             </div>
             ${dep.files
-              .map((file) => `<div class="file-path">${file}</div>`)
+              .map(
+                (file) => `
+                <div class="file-path" data-line="${
+                  file.lineNumber
+                }" data-code="${file.code.replace(/"/g, "&quot;")}">
+                  ${file.path}
+                  <div class="code-tooltip">
+                    <div class="tooltip-header">Line ${file.lineNumber}</div>
+                    <pre><code class="language-typescript">${file.code
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")}</code></pre>
+                  </div>
+                </div>
+              `
+              )
               .join("")}
             <div class="cycle-visualization">
               ${dep.files
                 .map(
                   (file, index) => `
-                ${file}
+                ${file.path}
                 ${
                   index < dep.files.length - 1
                     ? '<span class="arrow">→</span>'
@@ -183,7 +210,7 @@ function generateHTML(circularDeps, totalDeps, branch) {
               `
                 )
                 .join("")}
-              ${dep.files[0]}
+              ${dep.files[0].path}
             </div>
             <div class="graph-container" id="graph-${dep.id}"></div>
           </div>
@@ -215,26 +242,17 @@ function generateHTML(circularDeps, totalDeps, branch) {
   </footer>
 
   <script src="../../app.js"></script>
+  <script>
+    // Initialize syntax highlighting
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    });
+  </script>
 </body>
 </html>
   `;
 
   return html;
 }
-
-// Main execution
-const { circularDeps, totalDeps } = parseCircularDependencies(rawData);
-const html = generateHTML(circularDeps, totalDeps, branchName);
-
-// Create directory if it doesn't exist
-const outputDir = outputFile.substring(0, outputFile.lastIndexOf("/"));
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
-}
-
-// Write the HTML file
-fs.writeFileSync(outputFile, html);
-
-console.log(
-  `Successfully generated HTML with ${totalDeps} circular dependencies for branch ${branchName}.`
-);

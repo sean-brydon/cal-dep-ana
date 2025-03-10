@@ -48,31 +48,48 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Directory stat click
-  document.querySelectorAll(".directory-stat").forEach((stat) => {
-    stat.addEventListener("click", function () {
+  document.querySelectorAll(".directory-stat").forEach((dirStat) => {
+    dirStat.addEventListener("click", function () {
       const directory = this.getAttribute("data-directory");
-      if (directoryFilter) {
-        directoryFilter.value = directory;
+      document.getElementById("directoryFilter").value = directory;
 
-        // Switch to all dependencies tab
-        document
-          .querySelectorAll(".tab")
-          .forEach((t) => t.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((c) => c.classList.remove("active"));
-        document
-          .querySelector('.tab[data-tab="all-deps"]')
-          .classList.add("active");
-        document.getElementById("all-deps-content").classList.add("active");
+      // Switch to the dependencies tab
+      document.querySelector('.tab[data-tab="all-deps"]').click();
 
-        filterDependencies();
+      filterDependencies();
+    });
+  });
+
+  // Initialize syntax highlighting for code tooltips
+  if (typeof hljs !== "undefined") {
+    document.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightElement(block);
+    });
+  }
+
+  // Improve tooltip positioning
+  document.querySelectorAll(".file-path").forEach((filePath) => {
+    filePath.addEventListener("mouseenter", function () {
+      const tooltip = this.querySelector(".code-tooltip");
+      if (!tooltip) return;
+
+      // Check if tooltip would go off-screen to the right
+      const tooltipRect = tooltip.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+
+      if (tooltipRect.right > viewportWidth) {
+        tooltip.style.left = "auto";
+        tooltip.style.right = "100%";
+        tooltip.style.marginLeft = "0";
+        tooltip.style.marginRight = "10px";
       }
     });
   });
 
-  // Generate graph visualizations
-  generateGraphs();
+  // Generate graphs if available
+  if (document.querySelector(".graph-container")) {
+    generateGraphs();
+  }
 });
 
 // Filter dependencies based on search and directory filter
