@@ -129,49 +129,17 @@ function generateHTML(circularDeps, totalDeps, branch) {
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body x-data="{
-  modalOpen: false,
-  currentDep: null,
   searchTerm: '',
   directoryFilter: '',
   
-  init() {
-    this.filterDependencies();
-  },
-  
-  openModal(depId) {
-    const selector = '.dependency[data-id=' + '\"' + depId + '\"]';
-    const dep = document.querySelector(selector);
-    if (!dep) return;
-    
-    this.currentDep = {
-      id: depId,
-      files: Array.from(dep.querySelectorAll('.file-path')).map(el => ({
-        path: el.textContent.trim()
-      })),
-      importDetails: JSON.parse(dep.getAttribute('data-raw'))
-    };
-    this.modalOpen = true;
-    this.$nextTick(() => {
-      this.$refs.modalContent.querySelectorAll('pre code').forEach(block => {
-        hljs.highlightElement(block);
-      });
-    });
-  },
-  
-  closeModal() {
-    this.modalOpen = false;
-    this.currentDep = null;
-  },
-  
   isVisible(dep) {
     if (!this.searchTerm && !this.directoryFilter) return true;
-    
     const searchTerm = this.searchTerm.toLowerCase();
     const matchesSearch = !searchTerm || dep.textContent.toLowerCase().includes(searchTerm);
     const matchesDirectory = !this.directoryFilter || dep.getAttribute('data-directories').split(',').includes(this.directoryFilter);
     return matchesSearch && matchesDirectory;
   }
-}" x-init="init">
+}">
   <header>
     <div class="container">
       <h1>Cal.com Circular Dependencies</h1>
@@ -185,49 +153,39 @@ function generateHTML(circularDeps, totalDeps, branch) {
   </header>
 
   <main class="container">
-    <div class="tabs">
-      <div class="tab" :class="{ active: !$store.tab || $store.tab === 'all-deps' }" @click="$store.tab = 'all-deps'">All Dependencies</div>
-      <div class="tab" :class="{ active: $store.tab === 'directory-stats' }" @click="$store.tab = 'directory-stats'">Directory Statistics</div>
+    <div class="filters">
+      <div class="search-container">
+        <input type="text" 
+          x-model="searchTerm" 
+          placeholder="Search for files or patterns..."
+          class="search-input"
+        >
+      </div>
+      <div class="filter-container">
+        <select x-model="directoryFilter" class="directory-select">
+          <option value="">Filter by directory</option>
+          ${sortedDirs
+            .map(
+              (dir) =>
+                `<option value="${dir}">${dir} (${dirCounts[dir]})</option>`
+            )
+            .join("")}
+        </select>
+      </div>
     </div>
     
-    <div class="tab-content" :class="{ active: !$store.tab || $store.tab === 'all-deps' }">
-      <div class="filters">
-        <div class="search-container">
-          <input type="text" x-model="searchTerm" placeholder="Search for files or patterns...">
-        </div>
-        <div class="filter-container">
-          <select x-model="directoryFilter">
-            <option value="">Filter by directory</option>
-            ${sortedDirs
-              .map(
-                (dir) =>
-                  `<option value="${dir}">${dir} (${dirCounts[dir]})</option>`
-              )
-              .join("")}
-          </select>
-        </div>
-      </div>
-      
-      <div id="dependencies">
-        ${circularDeps
-          .map((dep) => {
-            const fileCount = dep.files.length;
-            const directories = [
-              ...new Set(dep.files.map((file) => getDirectory(file))),
-            ];
+    <div id="dependencies">
+      ${circularDeps
+        .map((dep) => {
+          const fileCount = dep.files.length;
+          const directories = [
+            ...new Set(dep.files.map((file) => getDirectory(file))),
+          ];
 
-            return `
+          return `
           <div class="dependency" 
             data-id="${dep.id}" 
             data-directories="${directories.join(",")}"
-            data-raw="${JSON.stringify(
-              dep.files.map((file, index) => ({
-                source: file.path,
-                target: dep.files[(index + 1) % dep.files.length].path,
-                lineNumber: file.lineNumber,
-                code: file.code.replace(/"/g, "&quot;"),
-              }))
-            ).replace(/"/g, "&quot;")}"
             x-show="isVisible($el)"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0"
@@ -238,115 +196,56 @@ function generateHTML(circularDeps, totalDeps, branch) {
           >
             <div class="dependency-header">
               <span>Circular Dependency #${dep.id}</span>
-              <div class="dependency-actions">
-                <button class="btn btn-small open-details" @click="openModal(${
-                  dep.id
-                })">View Details</button>
-                <span class="file-count">${fileCount} files</span>
-              </div>
+              <span class="file-count">${fileCount} files</span>
             </div>
             
-            <!-- Default view showing the dependency chain -->
             <div class="dependency-chain">
               ${dep.files
-                .map(
-                  (file, index) => `
-                <div class="chain-item">
-                  <div class="file-path">
-                    <div class="file-name">${file.path}</div>
-                    <div class="file-preview">Line ${file.lineNumber}: ${
-                    file.code
-                  }</div>
+                .map((file, index) => {
+                  const nextFile = dep.files[(index + 1) % dep.files.length];
+                  return `
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">${file.path}</div>
+                        <div class="dependency-direction">imports from ${
+                          nextFile.path
+                        }</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line ${
+                              file.lineNumber
+                            }</span>
+                            <span class="file-type">${
+                              file.path.endsWith(".tsx")
+                                ? "TypeScript"
+                                : "JavaScript"
+                            }</span>
+                          </div>
+                          <pre><code class="language-typescript">${
+                            file.code
+                          }</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    ${
+                      index < dep.files.length - 1
+                        ? '<div class="chain-arrow">↓</div>'
+                        : ""
+                    }
                   </div>
-                  ${
-                    index < dep.files.length - 1
-                      ? '<div class="chain-arrow">↓</div>'
-                      : ""
-                  }
-                </div>
-              `
-                )
+                `;
+                })
                 .join("")}
             </div>
           </div>
         `;
-          })
-          .join("")}
-      </div>
-    </div>
-    
-    <div class="tab-content" :class="{ active: $store.tab === 'directory-stats' }">
-      <h2>Directory Hotspots</h2>
-      <p>Click on a directory to filter dependencies containing files from that directory.</p>
-      <div class="directory-stats">
-        ${sortedDirs
-          .map(
-            (dir) => `
-          <div class="directory-stat" 
-            data-directory="${dir}" 
-            @click="directoryFilter = '${dir}'; $store.tab = 'all-deps'"
-          >
-            ${dir} <span class="directory-count">${dirCounts[dir]}</span>
-          </div>
-        `
-          )
-          .join("")}
-      </div>
+        })
+        .join("")}
     </div>
   </main>
-
-  <!-- Modal Template -->
-  <div id="dependencyModal" 
-    class="modal" 
-    :class="{ show: modalOpen }" 
-    @click="closeModal()"
-  >
-    <div class="modal-content" @click.stop x-ref="modalContent">
-      <div class="modal-header">
-        <h2>Circular Dependency Details</h2>
-        <button class="close-modal" @click="closeModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <template x-if="currentDep">
-          <div class="modal-sections">
-            <div class="modal-section">
-              <h3>Circular Dependency Chain</h3>
-              <div class="cycle-visualization">
-                <template x-for="(file, index) in currentDep.files" :key="index">
-                  <span>
-                    <span x-text="file.path"></span>
-                    <span class="arrow" x-show="index < currentDep.files.length - 1">→</span>
-                  </span>
-                </template>
-                <span x-text="currentDep.files[0].path"></span>
-              </div>
-            </div>
-            
-            <div class="modal-section">
-              <h3>Detailed Import Analysis</h3>
-              <template x-for="(file, index) in currentDep.files" :key="index">
-                <div class="dependency-detail">
-                  <div class="detail-header">
-                    <div class="detail-title" x-text="file.path + ' → ' + currentDep.files[(index + 1) % currentDep.files.length].path"></div>
-                    <div class="detail-meta" x-text="'File: ' + file.path"></div>
-                  </div>
-                  <template x-if="currentDep.importDetails[index]">
-                    <div class="detail-code">
-                      <div class="code-header">
-                        <span class="line-number" x-text="'Line ' + currentDep.importDetails[index].lineNumber"></span>
-                        <span class="file-type" x-text="file.path.endsWith('.tsx') ? 'TypeScript' : 'JavaScript'"></span>
-                      </div>
-                      <pre><code class="language-typescript" x-text="currentDep.importDetails[index].code"></code></pre>
-                    </div>
-                  </template>
-                </div>
-              </template>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
-  </div>
 
   <footer class="container">
     <p>Generated on ${new Date().toISOString()} | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
@@ -354,7 +253,10 @@ function generateHTML(circularDeps, totalDeps, branch) {
 
   <script>
     document.addEventListener('alpine:init', () => {
-      Alpine.store('tab', 'all-deps');
+      // Initialize syntax highlighting
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
     });
   </script>
 </body>
@@ -373,6 +275,13 @@ const outputDir = outputFile.substring(0, outputFile.lastIndexOf("/"));
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
+
+// Write the HTML file
+fs.writeFileSync(outputFile, html);
+
+console.log(
+  `Successfully generated HTML with ${totalDeps} circular dependencies for branch ${branchName}.`
+);
 
 // Write the HTML file
 fs.writeFileSync(outputFile, html);
