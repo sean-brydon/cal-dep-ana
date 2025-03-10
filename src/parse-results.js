@@ -128,30 +128,31 @@ function generateHTML(circularDeps, totalDeps, branch) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body x-data='{
+<body x-data="{
   modalOpen: false,
   currentDep: null,
-  searchTerm: "",
-  directoryFilter: "",
+  searchTerm: '',
+  directoryFilter: '',
   
   init() {
     this.filterDependencies();
   },
   
   openModal(depId) {
-    const dep = document.querySelector(\'.dependency[data-id="\' + depId + \'"]\');
+    const selector = '.dependency[data-id=' + '\"' + depId + '\"]';
+    const dep = document.querySelector(selector);
     if (!dep) return;
     
     this.currentDep = {
       id: depId,
-      files: Array.from(dep.querySelectorAll(".file-path")).map(el => ({
+      files: Array.from(dep.querySelectorAll('.file-path')).map(el => ({
         path: el.textContent.trim()
       })),
-      importDetails: JSON.parse(dep.getAttribute("data-raw"))
+      importDetails: JSON.parse(dep.getAttribute('data-raw'))
     };
     this.modalOpen = true;
     this.$nextTick(() => {
-      this.$refs.modalContent.querySelectorAll("pre code").forEach(block => {
+      this.$refs.modalContent.querySelectorAll('pre code').forEach(block => {
         hljs.highlightElement(block);
       });
     });
@@ -167,10 +168,10 @@ function generateHTML(circularDeps, totalDeps, branch) {
     
     const searchTerm = this.searchTerm.toLowerCase();
     const matchesSearch = !searchTerm || dep.textContent.toLowerCase().includes(searchTerm);
-    const matchesDirectory = !this.directoryFilter || dep.getAttribute("data-directories").split(",").includes(this.directoryFilter);
+    const matchesDirectory = !this.directoryFilter || dep.getAttribute('data-directories').split(',').includes(this.directoryFilter);
     return matchesSearch && matchesDirectory;
   }
-}' x-init="init">
+}" x-init="init">
   <header>
     <div class="container">
       <h1>Cal.com Circular Dependencies</h1>
