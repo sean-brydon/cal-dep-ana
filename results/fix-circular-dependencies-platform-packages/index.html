@@ -12,19 +12,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body x-data="{ 
+<body x-data="{
   modalOpen: false,
   currentDep: null,
   searchTerm: '',
   directoryFilter: '',
   
   init() {
-    this.$watch('searchTerm', () => this.filterDependencies());
-    this.$watch('directoryFilter', () => this.filterDependencies());
+    this.filterDependencies();
   },
   
   openModal(depId) {
-    const dep = this.getDependency(depId);
+    const selector = '.dependency[data-id=' + '"' + depId + '"]';
+    const dep = document.querySelector(selector);
     if (!dep) return;
     
     this.currentDep = {
@@ -42,33 +42,20 @@
     });
   },
   
-  getDependency(id) {
-    return document.querySelector(`.dependency[data-id="${id}"]`);
-  },
-  
   closeModal() {
     this.modalOpen = false;
     this.currentDep = null;
   },
   
   isVisible(dep) {
-    if (!dep) return false;
+    if (!this.searchTerm && !this.directoryFilter) return true;
+    
     const searchTerm = this.searchTerm.toLowerCase();
     const matchesSearch = !searchTerm || dep.textContent.toLowerCase().includes(searchTerm);
     const matchesDirectory = !this.directoryFilter || dep.getAttribute('data-directories').split(',').includes(this.directoryFilter);
     return matchesSearch && matchesDirectory;
-  },
-  
-  filterDependencies() {
-    document.querySelectorAll('.dependency').forEach(dep => {
-      if (this.isVisible(dep)) {
-        dep.style.display = '';
-      } else {
-        dep.style.display = 'none';
-      }
-    });
   }
-}">
+}" x-init="init">
   <header>
     <div class="container">
       <h1>Cal.com Circular Dependencies</h1>
@@ -106,7 +93,13 @@
             data-id="1" 
             data-directories="apps/web"
             data-raw="[{&quot;source&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/fixtures/apps.ts&quot;,&quot;lineNumber&quot;:9,&quot;code&quot;:&quot;import { createAppsFixture } from &quot;../fixtures/apps&quot;;&quot;},{&quot;source&quot;:&quot;apps/web/playwright/fixtures/apps.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/apps/conferencing/conferencingApps.e2e.ts&quot;,&quot;lineNumber&quot;:3,&quot;code&quot;:&quot;import type { TApp } from &quot;../apps/conferencing/conferencingApps.e2e&quot;;&quot;},{&quot;source&quot;:&quot;apps/web/playwright/apps/conferencing/conferencingApps.e2e.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;lineNumber&quot;:1,&quot;code&quot;:&quot;import { test } from &quot;../../lib/fixtures&quot;;&quot;},{&quot;source&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #1</span>
@@ -158,7 +151,13 @@
             data-id="2" 
             data-directories="apps/web"
             data-raw="[{&quot;source&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/fixtures/eventTypes.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import { createEventTypeFixture } from &quot;../fixtures/eventTypes&quot;;&quot;},{&quot;source&quot;:&quot;apps/web/playwright/fixtures/eventTypes.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/lib/testUtils.ts&quot;,&quot;lineNumber&quot;:3,&quot;code&quot;:&quot;import { localize } from &quot;../lib/testUtils&quot;;&quot;},{&quot;source&quot;:&quot;apps/web/playwright/lib/testUtils.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;lineNumber&quot;:16,&quot;code&quot;:&quot;import type { Fixtures } from &quot;./fixtures&quot;;&quot;},{&quot;source&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;target&quot;:&quot;apps/web/playwright/lib/fixtures.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #2</span>
@@ -210,7 +209,13 @@
             data-id="3" 
             data-directories="packages/app-store"
             data-raw="[{&quot;source&quot;:&quot;packages/app-store/basecamp3/lib/CalendarService.ts&quot;,&quot;target&quot;:&quot;packages/app-store/basecamp3/lib/helpers.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import { refreshAccessToken as getNewTokens } from &quot;./helpers&quot;;&quot;},{&quot;source&quot;:&quot;packages/app-store/basecamp3/lib/helpers.ts&quot;,&quot;target&quot;:&quot;packages/app-store/basecamp3/lib/CalendarService.ts&quot;,&quot;lineNumber&quot;:5,&quot;code&quot;:&quot;import type { BasecampToken } from &quot;./CalendarService&quot;;&quot;},{&quot;source&quot;:&quot;packages/app-store/basecamp3/lib/CalendarService.ts&quot;,&quot;target&quot;:&quot;packages/app-store/basecamp3/lib/CalendarService.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #3</span>
@@ -254,7 +259,13 @@
             data-id="4" 
             data-directories="packages/app-store"
             data-raw="[{&quot;source&quot;:&quot;packages/app-store/routing-forms/components/SingleForm.tsx&quot;,&quot;target&quot;:&quot;packages/app-store/routing-forms/components/RoutingNavBar.tsx&quot;,&quot;lineNumber&quot;:50,&quot;code&quot;:&quot;import RoutingNavBar from &quot;./RoutingNavBar&quot;;&quot;},{&quot;source&quot;:&quot;packages/app-store/routing-forms/components/RoutingNavBar.tsx&quot;,&quot;target&quot;:&quot;packages/app-store/routing-forms/components/SingleForm.tsx&quot;,&quot;lineNumber&quot;:9,&quot;code&quot;:&quot;import type { RoutingFormWithResponseCount } from &quot;./SingleForm&quot;;&quot;},{&quot;source&quot;:&quot;packages/app-store/routing-forms/components/SingleForm.tsx&quot;,&quot;target&quot;:&quot;packages/app-store/routing-forms/components/SingleForm.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #4</span>
@@ -298,7 +309,13 @@
             data-id="5" 
             data-directories="packages/app-store"
             data-raw="[{&quot;source&quot;:&quot;packages/app-store/zapier/components/AppSettingsInterface.tsx&quot;,&quot;target&quot;:&quot;packages/app-store/zapier/components/TemplateCard.tsx&quot;,&quot;lineNumber&quot;:3,&quot;code&quot;:&quot;import TemplateCard from &quot;./TemplateCard&quot;;&quot;},{&quot;source&quot;:&quot;packages/app-store/zapier/components/TemplateCard.tsx&quot;,&quot;target&quot;:&quot;packages/app-store/zapier/components/AppSettingsInterface.tsx&quot;,&quot;lineNumber&quot;:3,&quot;code&quot;:&quot;import type { Template } from &quot;./AppSettingsInterface&quot;;&quot;},{&quot;source&quot;:&quot;packages/app-store/zapier/components/AppSettingsInterface.tsx&quot;,&quot;target&quot;:&quot;packages/app-store/zapier/components/AppSettingsInterface.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #5</span>
@@ -342,7 +359,13 @@
             data-id="6" 
             data-directories="packages/dayjs"
             data-raw="[{&quot;source&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;target&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;lineNumber&quot;:2,&quot;code&quot;:&quot;import dayjs from &quot;dayjs&quot;;&quot;},{&quot;source&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;target&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;lineNumber&quot;:2,&quot;code&quot;:&quot;import dayjs from &quot;dayjs&quot;;&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #6</span>
@@ -378,7 +401,13 @@
             data-id="7" 
             data-directories="packages/dayjs"
             data-raw="[{&quot;source&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;target&quot;:&quot;packages/dayjs/plugins/business-days-plugin.ts&quot;,&quot;lineNumber&quot;:14,&quot;code&quot;:&quot;import BusinessDaysPlugin from &quot;./plugins/business-days-plugin&quot;;&quot;},{&quot;source&quot;:&quot;packages/dayjs/plugins/business-days-plugin.ts&quot;,&quot;target&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;lineNumber&quot;:1,&quot;code&quot;:&quot;import type { Dayjs, PluginFunc } from &quot;dayjs&quot;;&quot;},{&quot;source&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;target&quot;:&quot;packages/dayjs/index.ts&quot;,&quot;lineNumber&quot;:2,&quot;code&quot;:&quot;import dayjs from &quot;dayjs&quot;;&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #7</span>
@@ -422,7 +451,13 @@
             data-id="8" 
             data-directories="packages/embeds"
             data-raw="[{&quot;source&quot;:&quot;packages/embeds/embed-core/src/embed.ts&quot;,&quot;target&quot;:&quot;packages/embeds/embed-core/src/embed-iframe.ts&quot;,&quot;lineNumber&quot;:6,&quot;code&quot;:&quot;import type { InterfaceWithParent, interfaceWithParent, PrefillAndIframeAttrsConfig } from &quot;./embed-iframe&quot;;&quot;},{&quot;source&quot;:&quot;packages/embeds/embed-core/src/embed-iframe.ts&quot;,&quot;target&quot;:&quot;packages/embeds/embed-core/src/embed.ts&quot;,&quot;lineNumber&quot;:6,&quot;code&quot;:&quot;import type { Message } from &quot;./embed&quot;;&quot;},{&quot;source&quot;:&quot;packages/embeds/embed-core/src/embed.ts&quot;,&quot;target&quot;:&quot;packages/embeds/embed-core/src/embed.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #8</span>
@@ -466,7 +501,13 @@
             data-id="9" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleInternalNote.ts&quot;,&quot;lineNumber&quot;:38,&quot;code&quot;:&quot;import { handleInternalNote } from &quot;./handleInternalNote&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleInternalNote.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import { type BookingToDelete } from &quot;./handleCancelBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #9</span>
@@ -510,7 +551,13 @@
             data-id="10" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/cancel/cancelAttendeeSeat.ts&quot;,&quot;lineNumber&quot;:39,&quot;code&quot;:&quot;import cancelAttendeeSeat from &quot;./handleSeats/cancel/cancelAttendeeSeat&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/cancel/cancelAttendeeSeat.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;lineNumber&quot;:21,&quot;code&quot;:&quot;import type { AppRouterRequest, CustomRequest } from &quot;../../handleCancelBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleCancelBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #10</span>
@@ -554,7 +601,13 @@
             data-id="11" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking/validateOriginalRescheduledBooking.ts&quot;,&quot;lineNumber&quot;:5,&quot;code&quot;:&quot;import { validateOriginalRescheduledBooking } from &quot;./validateOriginalRescheduledBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking/validateOriginalRescheduledBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts&quot;,&quot;lineNumber&quot;:5,&quot;code&quot;:&quot;import { type OriginalRescheduledBooking } from &quot;./getOriginalRescheduledBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #11</span>
@@ -598,7 +651,13 @@
             data-id="12" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking/types.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking/loadUsers.ts&quot;,&quot;lineNumber&quot;:25,&quot;code&quot;:&quot;import type { LoadedUsers } from &quot;./loadUsers&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking/loadUsers.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking/types.ts&quot;,&quot;lineNumber&quot;:17,&quot;code&quot;:&quot;import type { NewBookingEventType } from &quot;./types&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking/types.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking/types.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #12</span>
@@ -642,7 +701,13 @@
             data-id="13" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;lineNumber&quot;:116,&quot;code&quot;:&quot;import handleSeats from &quot;./handleSeats/handleSeats&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:11,&quot;code&quot;:&quot;import { createLoggerWithEventDetails } from &quot;../handleNewBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #13</span>
@@ -686,7 +751,13 @@
             data-id="14" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;lineNumber&quot;:116,&quot;code&quot;:&quot;import handleSeats from &quot;./handleSeats/handleSeats&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import rescheduleSeatedBooking from &quot;./reschedule/rescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:10,&quot;code&quot;:&quot;import type { createLoggerWithEventDetails } from &quot;../../handleNewBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #14</span>
@@ -738,7 +809,13 @@
             data-id="15" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;lineNumber&quot;:116,&quot;code&quot;:&quot;import handleSeats from &quot;./handleSeats/handleSeats&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import rescheduleSeatedBooking from &quot;./reschedule/rescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:18,&quot;code&quot;:&quot;import ownerRescheduleSeatedBooking from &quot;./owner/ownerRescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import type { createLoggerWithEventDetails } from &quot;../../../handleNewBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #15</span>
@@ -798,7 +875,13 @@
             data-id="16" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;lineNumber&quot;:116,&quot;code&quot;:&quot;import handleSeats from &quot;./handleSeats/handleSeats&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import rescheduleSeatedBooking from &quot;./reschedule/rescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:18,&quot;code&quot;:&quot;import ownerRescheduleSeatedBooking from &quot;./owner/ownerRescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/combineTwoSeatedBookings.ts&quot;,&quot;lineNumber&quot;:11,&quot;code&quot;:&quot;import combineTwoSeatedBookings from &quot;./combineTwoSeatedBookings&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/combineTwoSeatedBookings.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:12,&quot;code&quot;:&quot;import type { createLoggerWithEventDetails } from &quot;../../../handleNewBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #16</span>
@@ -866,7 +949,13 @@
             data-id="17" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;lineNumber&quot;:116,&quot;code&quot;:&quot;import handleSeats from &quot;./handleSeats/handleSeats&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/handleSeats.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import rescheduleSeatedBooking from &quot;./reschedule/rescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts&quot;,&quot;lineNumber&quot;:18,&quot;code&quot;:&quot;import ownerRescheduleSeatedBooking from &quot;./owner/ownerRescheduleSeatedBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/moveSeatedBookingToNewTimeSlot.ts&quot;,&quot;lineNumber&quot;:12,&quot;code&quot;:&quot;import moveSeatedBookingToNewTimeSlot from &quot;./moveSeatedBookingToNewTimeSlot&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleSeats/reschedule/owner/moveSeatedBookingToNewTimeSlot.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:9,&quot;code&quot;:&quot;import type { createLoggerWithEventDetails } from &quot;../../../handleNewBooking&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;target&quot;:&quot;packages/features/bookings/lib/handleNewBooking.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #17</span>
@@ -934,7 +1023,13 @@
             data-id="18" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;lineNumber&quot;:6,&quot;code&quot;:&quot;import type { User } from &quot;./MemberList&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx&quot;,&quot;lineNumber&quot;:58,&quot;code&quot;:&quot;import DeleteBulkTeamMembers from &quot;./DeleteBulkTeamMembers&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #18</span>
@@ -978,7 +1073,13 @@
             data-id="19" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/EditMemberSheet.tsx&quot;,&quot;lineNumber&quot;:59,&quot;code&quot;:&quot;import { EditMemberSheet } from &quot;./EditMemberSheet&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/teams/components/EditMemberSheet.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;lineNumber&quot;:31,&quot;code&quot;:&quot;import type { Action, State, User } from &quot;./MemberList&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #19</span>
@@ -1022,7 +1123,13 @@
             data-id="20" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/EventTypesList.tsx&quot;,&quot;lineNumber&quot;:60,&quot;code&quot;:&quot;import { EventTypesList } from &quot;./EventTypesList&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/teams/components/EventTypesList.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;lineNumber&quot;:25,&quot;code&quot;:&quot;import type { User } from &quot;./MemberList&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/teams/components/MemberList.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #20</span>
@@ -1066,7 +1173,13 @@
             data-id="21" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/ee/workflows/components/WorkflowDetailsPage.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/workflows/pages/workflow.tsx&quot;,&quot;lineNumber&quot;:16,&quot;code&quot;:&quot;import type { FormValues } from &quot;../pages/workflow&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/workflows/pages/workflow.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/workflows/components/WorkflowDetailsPage.tsx&quot;,&quot;lineNumber&quot;:25,&quot;code&quot;:&quot;import WorkflowDetailsPage from &quot;../components/WorkflowDetailsPage&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/workflows/components/WorkflowDetailsPage.tsx&quot;,&quot;target&quot;:&quot;packages/features/ee/workflows/components/WorkflowDetailsPage.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #21</span>
@@ -1110,7 +1223,13 @@
             data-id="22" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/ee/workflows/lib/reminders/emailReminderManager.ts&quot;,&quot;target&quot;:&quot;packages/features/ee/workflows/lib/reminders/smsReminderManager.ts&quot;,&quot;lineNumber&quot;:22,&quot;code&quot;:&quot;import type { AttendeeInBookingInfo, BookingInfo, timeUnitLowerCase } from &quot;./smsReminderManager&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/workflows/lib/reminders/smsReminderManager.ts&quot;,&quot;target&quot;:&quot;packages/features/ee/workflows/lib/reminders/emailReminderManager.ts&quot;,&quot;lineNumber&quot;:15,&quot;code&quot;:&quot;import type { ScheduleReminderArgs } from &quot;./emailReminderManager&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/ee/workflows/lib/reminders/emailReminderManager.ts&quot;,&quot;target&quot;:&quot;packages/features/ee/workflows/lib/reminders/emailReminderManager.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #22</span>
@@ -1154,7 +1273,13 @@
             data-id="23" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/eventtypes/components/CheckedTeamSelect.tsx&quot;,&quot;target&quot;:&quot;packages/features/eventtypes/components/HostEditDialogs.tsx&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import type { PriorityDialogCustomClassNames, WeightDialogCustomClassNames } from &quot;./HostEditDialogs&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/eventtypes/components/HostEditDialogs.tsx&quot;,&quot;target&quot;:&quot;packages/features/eventtypes/components/CheckedTeamSelect.tsx&quot;,&quot;lineNumber&quot;:26,&quot;code&quot;:&quot;import type { CheckedSelectOption } from &quot;./CheckedTeamSelect&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/eventtypes/components/CheckedTeamSelect.tsx&quot;,&quot;target&quot;:&quot;packages/features/eventtypes/components/CheckedTeamSelect.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #23</span>
@@ -1198,7 +1323,13 @@
             data-id="24" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/form-builder/Components.tsx&quot;,&quot;target&quot;:&quot;packages/features/form-builder/FormBuilderField.tsx&quot;,&quot;lineNumber&quot;:25,&quot;code&quot;:&quot;import { ComponentForField } from &quot;./FormBuilderField&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/FormBuilderField.tsx&quot;,&quot;target&quot;:&quot;packages/features/form-builder/Components.tsx&quot;,&quot;lineNumber&quot;:10,&quot;code&quot;:&quot;import { Components, isValidValueProp } from &quot;./Components&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/Components.tsx&quot;,&quot;target&quot;:&quot;packages/features/form-builder/Components.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #24</span>
@@ -1242,7 +1373,13 @@
             data-id="25" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import type { FieldType, fieldTypeConfigSchema } from &quot;./schema&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;lineNumber&quot;:5,&quot;code&quot;:&quot;import { fieldTypesConfigMap } from &quot;./fieldTypes&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #25</span>
@@ -1286,7 +1423,13 @@
             data-id="26" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import type { FieldType, fieldTypeConfigSchema } from &quot;./schema&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/utils/variantsConfig.ts&quot;,&quot;lineNumber&quot;:7,&quot;code&quot;:&quot;import { getConfig as getVariantsConfig } from &quot;./utils/variantsConfig&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/utils/variantsConfig.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;lineNumber&quot;:5,&quot;code&quot;:&quot;import { fieldTypesConfigMap } from &quot;../fieldTypes&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/fieldTypes.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #26</span>
@@ -1338,7 +1481,13 @@
             data-id="27" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/utils/variantsConfig.ts&quot;,&quot;lineNumber&quot;:7,&quot;code&quot;:&quot;import { getConfig as getVariantsConfig } from &quot;./utils/variantsConfig&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/utils/variantsConfig.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;lineNumber&quot;:6,&quot;code&quot;:&quot;import type { fieldSchema } from &quot;../schema&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;target&quot;:&quot;packages/features/form-builder/schema.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #27</span>
@@ -1382,7 +1531,13 @@
             data-id="28" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/handleMarkNoShow.ts&quot;,&quot;target&quot;:&quot;packages/features/noShow/handleSendingAttendeeNoShowDataToApps.ts&quot;,&quot;lineNumber&quot;:14,&quot;code&quot;:&quot;import handleSendingAttendeeNoShowDataToApps from &quot;./noShow/handleSendingAttendeeNoShowDataToApps&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/noShow/handleSendingAttendeeNoShowDataToApps.ts&quot;,&quot;target&quot;:&quot;packages/features/handleMarkNoShow.ts&quot;,&quot;lineNumber&quot;:9,&quot;code&quot;:&quot;import type { NoShowAttendees } from &quot;../handleMarkNoShow&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/handleMarkNoShow.ts&quot;,&quot;target&quot;:&quot;packages/features/handleMarkNoShow.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #28</span>
@@ -1426,7 +1581,13 @@
             data-id="29" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/insights/hooks/useInsightsOrgTeams.ts&quot;,&quot;target&quot;:&quot;packages/features/insights/context/InsightsOrgTeamsProvider.tsx&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import { InsightsOrgTeamsContext } from &quot;../context/InsightsOrgTeamsProvider&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/insights/context/InsightsOrgTeamsProvider.tsx&quot;,&quot;target&quot;:&quot;packages/features/insights/filters/OrgTeamsFilter.tsx&quot;,&quot;lineNumber&quot;:8,&quot;code&quot;:&quot;import type { OrgTeamsType } from &quot;../filters/OrgTeamsFilter&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/insights/filters/OrgTeamsFilter.tsx&quot;,&quot;target&quot;:&quot;packages/features/insights/hooks/useInsightsOrgTeams.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import { useInsightsOrgTeams } from &quot;../hooks/useInsightsOrgTeams&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/insights/hooks/useInsightsOrgTeams.ts&quot;,&quot;target&quot;:&quot;packages/features/insights/hooks/useInsightsOrgTeams.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #29</span>
@@ -1478,7 +1639,13 @@
             data-id="30" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/shell/navigation/NavigationItem.tsx&quot;,&quot;target&quot;:&quot;packages/features/shell/navigation/useShouldDisplayNavigationItem.ts&quot;,&quot;lineNumber&quot;:10,&quot;code&quot;:&quot;import { useShouldDisplayNavigationItem } from &quot;./useShouldDisplayNavigationItem&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/shell/navigation/useShouldDisplayNavigationItem.ts&quot;,&quot;target&quot;:&quot;packages/features/shell/navigation/NavigationItem.tsx&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import type { NavigationItemType } from &quot;./NavigationItem&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/shell/navigation/NavigationItem.tsx&quot;,&quot;target&quot;:&quot;packages/features/shell/navigation/NavigationItem.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #30</span>
@@ -1522,7 +1689,13 @@
             data-id="31" 
             data-directories="packages/features"
             data-raw="[{&quot;source&quot;:&quot;packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx&quot;,&quot;target&quot;:&quot;packages/features/timezone-buddy/components/AvailabilitySliderTable.tsx&quot;,&quot;lineNumber&quot;:28,&quot;code&quot;:&quot;import type { SliderUser } from &quot;./AvailabilitySliderTable&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/timezone-buddy/components/AvailabilitySliderTable.tsx&quot;,&quot;target&quot;:&quot;packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx&quot;,&quot;lineNumber&quot;:22,&quot;code&quot;:&quot;import { AvailabilityEditSheet } from &quot;./AvailabilityEditSheet&quot;;&quot;},{&quot;source&quot;:&quot;packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx&quot;,&quot;target&quot;:&quot;packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #31</span>
@@ -1566,7 +1739,13 @@
             data-id="32" 
             data-directories="packages/kysely"
             data-raw="[{&quot;source&quot;:&quot;packages/kysely/index.ts&quot;,&quot;target&quot;:&quot;packages/kysely/index.ts&quot;,&quot;lineNumber&quot;:1,&quot;code&quot;:&quot;import { Kysely, PostgresDialect } from &quot;kysely&quot;;&quot;},{&quot;source&quot;:&quot;packages/kysely/index.ts&quot;,&quot;target&quot;:&quot;packages/kysely/index.ts&quot;,&quot;lineNumber&quot;:1,&quot;code&quot;:&quot;import { Kysely, PostgresDialect } from &quot;kysely&quot;;&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #32</span>
@@ -1602,7 +1781,13 @@
             data-id="33" 
             data-directories="packages/platform"
             data-raw="[{&quot;source&quot;:&quot;packages/platform/atoms/cal-provider/CalProvider.tsx&quot;,&quot;target&quot;:&quot;packages/platform/atoms/cal-provider/BaseCalProvider.tsx&quot;,&quot;lineNumber&quot;:9,&quot;code&quot;:&quot;import type { CalProviderProps } from &quot;./BaseCalProvider&quot;;&quot;},{&quot;source&quot;:&quot;packages/platform/atoms/cal-provider/BaseCalProvider.tsx&quot;,&quot;target&quot;:&quot;packages/platform/atoms/cal-provider/CalProvider.tsx&quot;,&quot;lineNumber&quot;:23,&quot;code&quot;:&quot;import type { i18nProps } from &quot;./CalProvider&quot;;&quot;},{&quot;source&quot;:&quot;packages/platform/atoms/cal-provider/CalProvider.tsx&quot;,&quot;target&quot;:&quot;packages/platform/atoms/cal-provider/CalProvider.tsx&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #33</span>
@@ -1646,7 +1831,13 @@
             data-id="34" 
             data-directories="packages/trpc"
             data-raw="[{&quot;source&quot;:&quot;packages/trpc/server/trpc.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/middlewares/sessionMiddleware.ts&quot;,&quot;lineNumber&quot;:6,&quot;code&quot;:&quot;import type { UserFromSession } from &quot;./middlewares/sessionMiddleware&quot;;&quot;},{&quot;source&quot;:&quot;packages/trpc/server/middlewares/sessionMiddleware.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/trpc.ts&quot;,&quot;lineNumber&quot;:13,&quot;code&quot;:&quot;import { middleware } from &quot;../trpc&quot;;&quot;},{&quot;source&quot;:&quot;packages/trpc/server/trpc.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/trpc.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #34</span>
@@ -1690,7 +1881,13 @@
             data-id="35" 
             data-directories="packages/trpc"
             data-raw="[{&quot;source&quot;:&quot;packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/routers/viewer/apps/updateAppCredentials.validator.ts&quot;,&quot;lineNumber&quot;:8,&quot;code&quot;:&quot;import { handleCustomValidations } from &quot;./updateAppCredentials.validator&quot;;&quot;},{&quot;source&quot;:&quot;packages/trpc/server/routers/viewer/apps/updateAppCredentials.validator.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts&quot;,&quot;lineNumber&quot;:3,&quot;code&quot;:&quot;import type { UpdateAppCredentialsOptions } from &quot;./updateAppCredentials.handler&quot;;&quot;},{&quot;source&quot;:&quot;packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #35</span>
@@ -1734,7 +1931,13 @@
             data-id="36" 
             data-directories="packages/trpc"
             data-raw="[{&quot;source&quot;:&quot;packages/trpc/server/routers/viewer/slots/util.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/routers/viewer/slots/getSchedule.handler.ts&quot;,&quot;lineNumber&quot;:43,&quot;code&quot;:&quot;import type { GetScheduleOptions } from &quot;./getSchedule.handler&quot;;&quot;},{&quot;source&quot;:&quot;packages/trpc/server/routers/viewer/slots/getSchedule.handler.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/routers/viewer/slots/util.ts&quot;,&quot;lineNumber&quot;:4,&quot;code&quot;:&quot;import { getAvailableSlots } from &quot;./util&quot;;&quot;},{&quot;source&quot;:&quot;packages/trpc/server/routers/viewer/slots/util.ts&quot;,&quot;target&quot;:&quot;packages/trpc/server/routers/viewer/slots/util.ts&quot;,&quot;lineNumber&quot;:0,&quot;code&quot;:&quot;Unknown import&quot;}]"
-            x-show.transition.opacity.duration.300ms="isVisible($el)"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
           >
             <div class="dependency-header">
               <span>Circular Dependency #36</span>
@@ -1896,7 +2099,7 @@
   </div>
 
   <footer class="container">
-    <p>Generated on 2025-03-10T11:42:26.377Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
+    <p>Generated on 2025-03-10T11:49:58.600Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
   </footer>
 
   <script>
