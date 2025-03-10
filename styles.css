@@ -250,12 +250,14 @@ input[type="text"] {
 }
 
 #searchInput,
-#directoryFilter {
+select {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
 }
 
 .dependency {
@@ -564,4 +566,99 @@ footer a:hover {
 .tab-content.active {
   display: block;
   opacity: 1;
+}
+
+/* Add new styles for the dependency chain */
+.dependency-chain {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.chain-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.chain-item:last-child {
+  margin-bottom: 0;
+}
+
+.chain-arrow {
+  color: var(--primary-color);
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.file-path {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--light-bg);
+  border-radius: 4px;
+}
+
+.file-name {
+  font-family: monospace;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.file-preview {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.25rem 0;
+  background-color: #f8fafc;
+  border-radius: 2px;
+  padding: 0.25rem 0.5rem;
+}
+
+.modal-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.modal-section {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.modal-section h3 {
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.line-number {
+  font-family: monospace;
+  color: #666;
+}
+
+.file-type {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.detail-meta {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.25rem;
 }
