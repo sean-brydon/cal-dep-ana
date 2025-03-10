@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cal.com Circular Dependencies (54) - main</title>
+  <title>Cal.com Circular Dependencies (52) - main</title>
   <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
       <div class="branch-info">
         <span class="branch-label">Branch:</span>
         <span class="branch-name">main</span>
-        <span class="deps-count">54 circular dependencies</span>
+        <span class="deps-count">52 circular dependencies</span>
       </div>
       <a href="../../index.html" class="back-link">← Back to all analyses</a>
     </div>
@@ -34,7 +34,7 @@
         <div class="filter-container">
           <select id="directoryFilter">
             <option value="">Filter by directory</option>
-            <option value="packages/features">packages/features (86)</option><option value="packages/platform">packages/platform (53)</option><option value="packages/app-store">packages/app-store (9)</option><option value="packages/trpc">packages/trpc (9)</option><option value="apps/web">apps/web (8)</option><option value="packages/ui">packages/ui (7)</option><option value="packages/dayjs">packages/dayjs (3)</option><option value="packages/embeds">packages/embeds (3)</option><option value="packages/lib">packages/lib (3)</option>
+            <option value="packages/features">packages/features (86)</option><option value="packages/platform">packages/platform (53)</option><option value="packages/app-store">packages/app-store (9)</option><option value="packages/trpc">packages/trpc (9)</option><option value="apps/web">apps/web (8)</option><option value="packages/dayjs">packages/dayjs (3)</option><option value="packages/embeds">packages/embeds (3)</option><option value="packages/lib">packages/lib (3)</option>
           </select>
         </div>
       </div>
@@ -1239,53 +1239,6 @@
             <div class="graph-container" id="graph-52"></div>
           </div>
         
-          <div class="dependency" data-id="53" data-directories="packages/ui">
-            <div class="dependency-header">
-              <span>Circular Dependency #53</span>
-              <span class="file-count">3 files</span>
-            </div>
-            <div class="file-path">packages/ui/components/editor/Editor.tsx</div><div class="file-path">packages/ui/components/editor/plugins/ToolbarPlugin.tsx</div><div class="file-path">packages/ui/components/editor/Editor.tsx</div>
-            <div class="cycle-visualization">
-              
-                packages/ui/components/editor/Editor.tsx
-                <span class="arrow">→</span>
-              
-                packages/ui/components/editor/plugins/ToolbarPlugin.tsx
-                <span class="arrow">→</span>
-              
-                packages/ui/components/editor/Editor.tsx
-                <span class="arrow">→</span>
-              
-              packages/ui/components/editor/Editor.tsx
-            </div>
-            <div class="graph-container" id="graph-53"></div>
-          </div>
-        
-          <div class="dependency" data-id="54" data-directories="packages/ui">
-            <div class="dependency-header">
-              <span>Circular Dependency #54</span>
-              <span class="file-count">4 files</span>
-            </div>
-            <div class="file-path">packages/ui/components/form/select/Select.tsx</div><div class="file-path">packages/ui/components/form/select/selectTheme.ts</div><div class="file-path">packages/ui/components/form/select/components.tsx</div><div class="file-path">packages/ui/components/form/select/Select.tsx</div>
-            <div class="cycle-visualization">
-              
-                packages/ui/components/form/select/Select.tsx
-                <span class="arrow">→</span>
-              
-                packages/ui/components/form/select/selectTheme.ts
-                <span class="arrow">→</span>
-              
-                packages/ui/components/form/select/components.tsx
-                <span class="arrow">→</span>
-              
-                packages/ui/components/form/select/Select.tsx
-                <span class="arrow">→</span>
-              
-              packages/ui/components/form/select/Select.tsx
-            </div>
-            <div class="graph-container" id="graph-54"></div>
-          </div>
-        
       </div>
     </div>
     
@@ -1314,10 +1267,6 @@
             apps/web <span class="directory-count">8</span>
           </div>
         
-          <div class="directory-stat" data-directory="packages/ui">
-            packages/ui <span class="directory-count">7</span>
-          </div>
-        
           <div class="directory-stat" data-directory="packages/dayjs">
             packages/dayjs <span class="directory-count">3</span>
           </div>
@@ -1335,7 +1284,7 @@
   </main>
 
   <footer class="container">
-    <p>Generated on 2025-03-07T15:35:12.952Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
+    <p>Generated on 2025-03-10T08:57:44.252Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
   </footer>
 
   <script src="../../app.js"></script>
