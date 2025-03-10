@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cal.com Circular Dependencies (49) - fix/circular-dependency</title>
+  <title>Cal.com Circular Dependencies (43) - fix/circular-dependency</title>
   <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
       <div class="branch-info">
         <span class="branch-label">Branch:</span>
         <span class="branch-name">fix/circular-dependency</span>
-        <span class="deps-count">49 circular dependencies</span>
+        <span class="deps-count">43 circular dependencies</span>
       </div>
       <a href="../../index.html" class="back-link">← Back to all analyses</a>
     </div>
@@ -34,7 +34,7 @@
         <div class="filter-container">
           <select id="directoryFilter">
             <option value="">Filter by directory</option>
-            <option value="packages/features">packages/features (77)</option><option value="packages/platform">packages/platform (53)</option><option value="packages/app-store">packages/app-store (9)</option><option value="packages/trpc">packages/trpc (9)</option><option value="apps/web">apps/web (8)</option><option value="packages/dayjs">packages/dayjs (3)</option><option value="packages/embeds">packages/embeds (3)</option><option value="packages/lib">packages/lib (3)</option>
+            <option value="packages/platform">packages/platform (53)</option><option value="packages/features">packages/features (50)</option><option value="packages/app-store">packages/app-store (9)</option><option value="packages/trpc">packages/trpc (9)</option><option value="apps/web">apps/web (8)</option><option value="packages/dayjs">packages/dayjs (3)</option><option value="packages/embeds">packages/embeds (3)</option><option value="packages/lib">packages/lib (3)</option>
           </select>
         </div>
       </div>
@@ -250,165 +250,6 @@
               <span>Circular Dependency #10</span>
               <span class="file-count">3 files</span>
             </div>
-            <div class="file-path">packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking/validateOriginalRescheduledBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts</div>
-            <div class="cycle-visualization">
-              
-                packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking/validateOriginalRescheduledBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts
-                <span class="arrow">→</span>
-              
-              packages/features/bookings/lib/handleNewBooking/getOriginalRescheduledBooking.ts
-            </div>
-            <div class="graph-container" id="graph-10"></div>
-          </div>
-        
-          <div class="dependency" data-id="11" data-directories="packages/features">
-            <div class="dependency-header">
-              <span>Circular Dependency #11</span>
-              <span class="file-count">3 files</span>
-            </div>
-            <div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/handleSeats.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div>
-            <div class="cycle-visualization">
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/handleSeats.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-              packages/features/bookings/lib/handleNewBooking.ts
-            </div>
-            <div class="graph-container" id="graph-11"></div>
-          </div>
-        
-          <div class="dependency" data-id="12" data-directories="packages/features">
-            <div class="dependency-header">
-              <span>Circular Dependency #12</span>
-              <span class="file-count">4 files</span>
-            </div>
-            <div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/handleSeats.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div>
-            <div class="cycle-visualization">
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/handleSeats.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-              packages/features/bookings/lib/handleNewBooking.ts
-            </div>
-            <div class="graph-container" id="graph-12"></div>
-          </div>
-        
-          <div class="dependency" data-id="13" data-directories="packages/features">
-            <div class="dependency-header">
-              <span>Circular Dependency #13</span>
-              <span class="file-count">5 files</span>
-            </div>
-            <div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/handleSeats.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div>
-            <div class="cycle-visualization">
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/handleSeats.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-              packages/features/bookings/lib/handleNewBooking.ts
-            </div>
-            <div class="graph-container" id="graph-13"></div>
-          </div>
-        
-          <div class="dependency" data-id="14" data-directories="packages/features">
-            <div class="dependency-header">
-              <span>Circular Dependency #14</span>
-              <span class="file-count">6 files</span>
-            </div>
-            <div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/handleSeats.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/owner/combineTwoSeatedBookings.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div>
-            <div class="cycle-visualization">
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/handleSeats.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/owner/combineTwoSeatedBookings.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-              packages/features/bookings/lib/handleNewBooking.ts
-            </div>
-            <div class="graph-container" id="graph-14"></div>
-          </div>
-        
-          <div class="dependency" data-id="15" data-directories="packages/features">
-            <div class="dependency-header">
-              <span>Circular Dependency #15</span>
-              <span class="file-count">6 files</span>
-            </div>
-            <div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/handleSeats.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts</div><div class="file-path">packages/features/bookings/lib/handleSeats/reschedule/owner/moveSeatedBookingToNewTimeSlot.ts</div><div class="file-path">packages/features/bookings/lib/handleNewBooking.ts</div>
-            <div class="cycle-visualization">
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/handleSeats.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/rescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/owner/ownerRescheduleSeatedBooking.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleSeats/reschedule/owner/moveSeatedBookingToNewTimeSlot.ts
-                <span class="arrow">→</span>
-              
-                packages/features/bookings/lib/handleNewBooking.ts
-                <span class="arrow">→</span>
-              
-              packages/features/bookings/lib/handleNewBooking.ts
-            </div>
-            <div class="graph-container" id="graph-15"></div>
-          </div>
-        
-          <div class="dependency" data-id="16" data-directories="packages/features">
-            <div class="dependency-header">
-              <span>Circular Dependency #16</span>
-              <span class="file-count">3 files</span>
-            </div>
             <div class="file-path">packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx</div><div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div><div class="file-path">packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx</div>
             <div class="cycle-visualization">
               
@@ -423,12 +264,12 @@
               
               packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx
             </div>
-            <div class="graph-container" id="graph-16"></div>
+            <div class="graph-container" id="graph-10"></div>
           </div>
         
-          <div class="dependency" data-id="17" data-directories="packages/features">
+          <div class="dependency" data-id="11" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #17</span>
+              <span>Circular Dependency #11</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div><div class="file-path">packages/features/ee/teams/components/EditMemberSheet.tsx</div><div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
@@ -445,12 +286,12 @@
               
               packages/features/ee/teams/components/MemberList.tsx
             </div>
-            <div class="graph-container" id="graph-17"></div>
+            <div class="graph-container" id="graph-11"></div>
           </div>
         
-          <div class="dependency" data-id="18" data-directories="packages/features">
+          <div class="dependency" data-id="12" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #18</span>
+              <span>Circular Dependency #12</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div><div class="file-path">packages/features/ee/teams/components/EventTypesList.tsx</div><div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
@@ -467,12 +308,12 @@
               
               packages/features/ee/teams/components/MemberList.tsx
             </div>
-            <div class="graph-container" id="graph-18"></div>
+            <div class="graph-container" id="graph-12"></div>
           </div>
         
-          <div class="dependency" data-id="19" data-directories="packages/features">
+          <div class="dependency" data-id="13" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #19</span>
+              <span>Circular Dependency #13</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/ee/workflows/components/WorkflowDetailsPage.tsx</div><div class="file-path">packages/features/ee/workflows/pages/workflow.tsx</div><div class="file-path">packages/features/ee/workflows/components/WorkflowDetailsPage.tsx</div>
@@ -489,12 +330,12 @@
               
               packages/features/ee/workflows/components/WorkflowDetailsPage.tsx
             </div>
-            <div class="graph-container" id="graph-19"></div>
+            <div class="graph-container" id="graph-13"></div>
           </div>
         
-          <div class="dependency" data-id="20" data-directories="packages/features">
+          <div class="dependency" data-id="14" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #20</span>
+              <span>Circular Dependency #14</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/ee/workflows/lib/reminders/emailReminderManager.ts</div><div class="file-path">packages/features/ee/workflows/lib/reminders/smsReminderManager.ts</div><div class="file-path">packages/features/ee/workflows/lib/reminders/emailReminderManager.ts</div>
@@ -511,12 +352,12 @@
               
               packages/features/ee/workflows/lib/reminders/emailReminderManager.ts
             </div>
-            <div class="graph-container" id="graph-20"></div>
+            <div class="graph-container" id="graph-14"></div>
           </div>
         
-          <div class="dependency" data-id="21" data-directories="packages/features">
+          <div class="dependency" data-id="15" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #21</span>
+              <span>Circular Dependency #15</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/eventtypes/components/CheckedTeamSelect.tsx</div><div class="file-path">packages/features/eventtypes/components/HostEditDialogs.tsx</div><div class="file-path">packages/features/eventtypes/components/CheckedTeamSelect.tsx</div>
@@ -533,12 +374,12 @@
               
               packages/features/eventtypes/components/CheckedTeamSelect.tsx
             </div>
-            <div class="graph-container" id="graph-21"></div>
+            <div class="graph-container" id="graph-15"></div>
           </div>
         
-          <div class="dependency" data-id="22" data-directories="packages/features">
+          <div class="dependency" data-id="16" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #22</span>
+              <span>Circular Dependency #16</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/form-builder/Components.tsx</div><div class="file-path">packages/features/form-builder/FormBuilderField.tsx</div><div class="file-path">packages/features/form-builder/Components.tsx</div>
@@ -555,12 +396,12 @@
               
               packages/features/form-builder/Components.tsx
             </div>
-            <div class="graph-container" id="graph-22"></div>
+            <div class="graph-container" id="graph-16"></div>
           </div>
         
-          <div class="dependency" data-id="23" data-directories="packages/features">
+          <div class="dependency" data-id="17" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #23</span>
+              <span>Circular Dependency #17</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/form-builder/fieldTypes.ts</div><div class="file-path">packages/features/form-builder/schema.ts</div><div class="file-path">packages/features/form-builder/fieldTypes.ts</div>
@@ -577,12 +418,12 @@
               
               packages/features/form-builder/fieldTypes.ts
             </div>
-            <div class="graph-container" id="graph-23"></div>
+            <div class="graph-container" id="graph-17"></div>
           </div>
         
-          <div class="dependency" data-id="24" data-directories="packages/features">
+          <div class="dependency" data-id="18" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #24</span>
+              <span>Circular Dependency #18</span>
               <span class="file-count">4 files</span>
             </div>
             <div class="file-path">packages/features/form-builder/fieldTypes.ts</div><div class="file-path">packages/features/form-builder/schema.ts</div><div class="file-path">packages/features/form-builder/utils/variantsConfig.ts</div><div class="file-path">packages/features/form-builder/fieldTypes.ts</div>
@@ -602,12 +443,12 @@
               
               packages/features/form-builder/fieldTypes.ts
             </div>
-            <div class="graph-container" id="graph-24"></div>
+            <div class="graph-container" id="graph-18"></div>
           </div>
         
-          <div class="dependency" data-id="25" data-directories="packages/features">
+          <div class="dependency" data-id="19" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #25</span>
+              <span>Circular Dependency #19</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/form-builder/schema.ts</div><div class="file-path">packages/features/form-builder/utils/variantsConfig.ts</div><div class="file-path">packages/features/form-builder/schema.ts</div>
@@ -624,12 +465,12 @@
               
               packages/features/form-builder/schema.ts
             </div>
-            <div class="graph-container" id="graph-25"></div>
+            <div class="graph-container" id="graph-19"></div>
           </div>
         
-          <div class="dependency" data-id="26" data-directories="packages/features">
+          <div class="dependency" data-id="20" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #26</span>
+              <span>Circular Dependency #20</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/handleMarkNoShow.ts</div><div class="file-path">packages/features/noShow/handleSendingAttendeeNoShowDataToApps.ts</div><div class="file-path">packages/features/handleMarkNoShow.ts</div>
@@ -646,12 +487,12 @@
               
               packages/features/handleMarkNoShow.ts
             </div>
-            <div class="graph-container" id="graph-26"></div>
+            <div class="graph-container" id="graph-20"></div>
           </div>
         
-          <div class="dependency" data-id="27" data-directories="packages/features">
+          <div class="dependency" data-id="21" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #27</span>
+              <span>Circular Dependency #21</span>
               <span class="file-count">4 files</span>
             </div>
             <div class="file-path">packages/features/insights/hooks/useInsightsOrgTeams.ts</div><div class="file-path">packages/features/insights/context/InsightsOrgTeamsProvider.tsx</div><div class="file-path">packages/features/insights/filters/OrgTeamsFilter.tsx</div><div class="file-path">packages/features/insights/hooks/useInsightsOrgTeams.ts</div>
@@ -671,12 +512,12 @@
               
               packages/features/insights/hooks/useInsightsOrgTeams.ts
             </div>
-            <div class="graph-container" id="graph-27"></div>
+            <div class="graph-container" id="graph-21"></div>
           </div>
         
-          <div class="dependency" data-id="28" data-directories="packages/features">
+          <div class="dependency" data-id="22" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #28</span>
+              <span>Circular Dependency #22</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/shell/navigation/NavigationItem.tsx</div><div class="file-path">packages/features/shell/navigation/useShouldDisplayNavigationItem.ts</div><div class="file-path">packages/features/shell/navigation/NavigationItem.tsx</div>
@@ -693,12 +534,12 @@
               
               packages/features/shell/navigation/NavigationItem.tsx
             </div>
-            <div class="graph-container" id="graph-28"></div>
+            <div class="graph-container" id="graph-22"></div>
           </div>
         
-          <div class="dependency" data-id="29" data-directories="packages/features">
+          <div class="dependency" data-id="23" data-directories="packages/features">
             <div class="dependency-header">
-              <span>Circular Dependency #29</span>
+              <span>Circular Dependency #23</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx</div><div class="file-path">packages/features/timezone-buddy/components/AvailabilitySliderTable.tsx</div><div class="file-path">packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx</div>
@@ -715,12 +556,12 @@
               
               packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx
             </div>
-            <div class="graph-container" id="graph-29"></div>
+            <div class="graph-container" id="graph-23"></div>
           </div>
         
-          <div class="dependency" data-id="30" data-directories="packages/lib">
+          <div class="dependency" data-id="24" data-directories="packages/lib">
             <div class="dependency-header">
-              <span>Circular Dependency #30</span>
+              <span>Circular Dependency #24</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/lib/server/repository/profile.ts</div><div class="file-path">packages/lib/server/repository/user.ts</div><div class="file-path">packages/lib/server/repository/profile.ts</div>
@@ -737,12 +578,12 @@
               
               packages/lib/server/repository/profile.ts
             </div>
-            <div class="graph-container" id="graph-30"></div>
+            <div class="graph-container" id="graph-24"></div>
           </div>
         
-          <div class="dependency" data-id="31" data-directories="packages/platform">
+          <div class="dependency" data-id="25" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #31</span>
+              <span>Circular Dependency #25</span>
               <span class="file-count">4 files</span>
             </div>
             <div class="file-path">packages/platform/atoms/hooks/useAtomsContext.ts</div><div class="file-path">packages/platform/atoms/cal-provider/CalProvider.tsx</div><div class="file-path">packages/platform/atoms/cal-provider/BaseCalProvider.tsx</div><div class="file-path">packages/platform/atoms/hooks/useAtomsContext.ts</div>
@@ -762,12 +603,12 @@
               
               packages/platform/atoms/hooks/useAtomsContext.ts
             </div>
-            <div class="graph-container" id="graph-31"></div>
+            <div class="graph-container" id="graph-25"></div>
           </div>
         
-          <div class="dependency" data-id="32" data-directories="packages/platform">
+          <div class="dependency" data-id="26" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #32</span>
+              <span>Circular Dependency #26</span>
               <span class="file-count">6 files</span>
             </div>
             <div class="file-path">packages/platform/atoms/src/components/atoms-wrapper.tsx</div><div class="file-path">packages/platform/atoms/hooks/useAtomsContext.ts</div><div class="file-path">packages/platform/atoms/cal-provider/CalProvider.tsx</div><div class="file-path">packages/platform/atoms/cal-provider/BaseCalProvider.tsx</div><div class="file-path">packages/platform/atoms/src/components/ui/toaster.tsx</div><div class="file-path">packages/platform/atoms/src/components/atoms-wrapper.tsx</div>
@@ -793,12 +634,12 @@
               
               packages/platform/atoms/src/components/atoms-wrapper.tsx
             </div>
-            <div class="graph-container" id="graph-32"></div>
+            <div class="graph-container" id="graph-26"></div>
           </div>
         
-          <div class="dependency" data-id="33" data-directories="packages/platform">
+          <div class="dependency" data-id="27" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #33</span>
+              <span>Circular Dependency #27</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/atoms/cal-provider/CalProvider.tsx</div><div class="file-path">packages/platform/atoms/cal-provider/BaseCalProvider.tsx</div><div class="file-path">packages/platform/atoms/cal-provider/CalProvider.tsx</div>
@@ -815,12 +656,12 @@
               
               packages/platform/atoms/cal-provider/CalProvider.tsx
             </div>
-            <div class="graph-container" id="graph-33"></div>
+            <div class="graph-container" id="graph-27"></div>
           </div>
         
-          <div class="dependency" data-id="34" data-directories="packages/platform">
+          <div class="dependency" data-id="28" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #34</span>
+              <span>Circular Dependency #28</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/atoms/cal-provider/CalProvider.tsx</div><div class="file-path">packages/platform/atoms/cal-provider/BaseCalProvider.tsx</div><div class="file-path">packages/platform/atoms/cal-provider/CalProvider.tsx</div>
@@ -837,12 +678,12 @@
               
               packages/platform/atoms/cal-provider/CalProvider.tsx
             </div>
-            <div class="graph-container" id="graph-34"></div>
+            <div class="graph-container" id="graph-28"></div>
           </div>
         
-          <div class="dependency" data-id="35" data-directories="packages/platform">
+          <div class="dependency" data-id="29" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #35</span>
+              <span>Circular Dependency #29</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/atoms/booker/BookerPlatformWrapper.tsx</div><div class="file-path">packages/platform/atoms/event-types/atom-api-transformers/transformApiEventTypeForAtom.ts</div><div class="file-path">packages/platform/atoms/booker/BookerPlatformWrapper.tsx</div>
@@ -859,12 +700,12 @@
               
               packages/platform/atoms/booker/BookerPlatformWrapper.tsx
             </div>
-            <div class="graph-container" id="graph-35"></div>
+            <div class="graph-container" id="graph-29"></div>
           </div>
         
-          <div class="dependency" data-id="36" data-directories="packages/platform">
+          <div class="dependency" data-id="30" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #36</span>
+              <span>Circular Dependency #30</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/atoms/event-types/hooks/usePlatformTabsNavigations.tsx</div><div class="file-path">packages/platform/atoms/event-types/wrappers/EventTypePlatformWrapper.tsx</div><div class="file-path">packages/platform/atoms/event-types/hooks/usePlatformTabsNavigations.tsx</div>
@@ -881,12 +722,12 @@
               
               packages/platform/atoms/event-types/hooks/usePlatformTabsNavigations.tsx
             </div>
-            <div class="graph-container" id="graph-36"></div>
+            <div class="graph-container" id="graph-30"></div>
           </div>
         
-          <div class="dependency" data-id="37" data-directories="packages/platform">
+          <div class="dependency" data-id="31" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #37</span>
+              <span>Circular Dependency #31</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/bookings/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -903,12 +744,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-37"></div>
+            <div class="graph-container" id="graph-31"></div>
           </div>
         
-          <div class="dependency" data-id="38" data-directories="packages/platform">
+          <div class="dependency" data-id="32" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #38</span>
+              <span>Circular Dependency #32</span>
               <span class="file-count">4 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/bookings/index.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/endpoint-handler.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -928,12 +769,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-38"></div>
+            <div class="graph-container" id="graph-32"></div>
           </div>
         
-          <div class="dependency" data-id="39" data-directories="packages/platform">
+          <div class="dependency" data-id="33" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #39</span>
+              <span>Circular Dependency #33</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/events/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -950,12 +791,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-39"></div>
+            <div class="graph-container" id="graph-33"></div>
           </div>
         
-          <div class="dependency" data-id="40" data-directories="packages/platform">
+          <div class="dependency" data-id="34" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #40</span>
+              <span>Circular Dependency #34</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/events/event-types/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -972,12 +813,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-40"></div>
+            <div class="graph-container" id="graph-34"></div>
           </div>
         
-          <div class="dependency" data-id="41" data-directories="packages/platform">
+          <div class="dependency" data-id="35" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #41</span>
+              <span>Circular Dependency #35</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/managed-users/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -994,12 +835,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-41"></div>
+            <div class="graph-container" id="graph-35"></div>
           </div>
         
-          <div class="dependency" data-id="42" data-directories="packages/platform">
+          <div class="dependency" data-id="36" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #42</span>
+              <span>Circular Dependency #36</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/oauth-flow/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -1016,12 +857,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-42"></div>
+            <div class="graph-container" id="graph-36"></div>
           </div>
         
-          <div class="dependency" data-id="43" data-directories="packages/platform">
+          <div class="dependency" data-id="37" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #43</span>
+              <span>Circular Dependency #37</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/schedules/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -1038,12 +879,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-43"></div>
+            <div class="graph-container" id="graph-37"></div>
           </div>
         
-          <div class="dependency" data-id="44" data-directories="packages/platform">
+          <div class="dependency" data-id="38" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #44</span>
+              <span>Circular Dependency #38</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/cal.ts</div><div class="file-path">packages/platform/sdk/src/endpoints/slots/index.ts</div><div class="file-path">packages/platform/sdk/src/cal.ts</div>
@@ -1060,12 +901,12 @@
               
               packages/platform/sdk/src/cal.ts
             </div>
-            <div class="graph-container" id="graph-44"></div>
+            <div class="graph-container" id="graph-38"></div>
           </div>
         
-          <div class="dependency" data-id="45" data-directories="packages/platform">
+          <div class="dependency" data-id="39" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #45</span>
+              <span>Circular Dependency #39</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/lib/http-caller.ts</div><div class="file-path">packages/platform/sdk/src/lib/sdk-secrets.ts</div><div class="file-path">packages/platform/sdk/src/lib/http-caller.ts</div>
@@ -1082,12 +923,12 @@
               
               packages/platform/sdk/src/lib/http-caller.ts
             </div>
-            <div class="graph-container" id="graph-45"></div>
+            <div class="graph-container" id="graph-39"></div>
           </div>
         
-          <div class="dependency" data-id="46" data-directories="packages/platform">
+          <div class="dependency" data-id="40" data-directories="packages/platform">
             <div class="dependency-header">
-              <span>Circular Dependency #46</span>
+              <span>Circular Dependency #40</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/platform/sdk/src/lib/http-caller.ts</div><div class="file-path">packages/platform/sdk/src/lib/sdk-secrets.ts</div><div class="file-path">packages/platform/sdk/src/lib/http-caller.ts</div>
@@ -1104,12 +945,12 @@
               
               packages/platform/sdk/src/lib/http-caller.ts
             </div>
-            <div class="graph-container" id="graph-46"></div>
+            <div class="graph-container" id="graph-40"></div>
           </div>
         
-          <div class="dependency" data-id="47" data-directories="packages/trpc">
+          <div class="dependency" data-id="41" data-directories="packages/trpc">
             <div class="dependency-header">
-              <span>Circular Dependency #47</span>
+              <span>Circular Dependency #41</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/trpc/server/trpc.ts</div><div class="file-path">packages/trpc/server/middlewares/sessionMiddleware.ts</div><div class="file-path">packages/trpc/server/trpc.ts</div>
@@ -1126,12 +967,12 @@
               
               packages/trpc/server/trpc.ts
             </div>
-            <div class="graph-container" id="graph-47"></div>
+            <div class="graph-container" id="graph-41"></div>
           </div>
         
-          <div class="dependency" data-id="48" data-directories="packages/trpc">
+          <div class="dependency" data-id="42" data-directories="packages/trpc">
             <div class="dependency-header">
-              <span>Circular Dependency #48</span>
+              <span>Circular Dependency #42</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts</div><div class="file-path">packages/trpc/server/routers/viewer/apps/updateAppCredentials.validator.ts</div><div class="file-path">packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts</div>
@@ -1148,12 +989,12 @@
               
               packages/trpc/server/routers/viewer/apps/updateAppCredentials.handler.ts
             </div>
-            <div class="graph-container" id="graph-48"></div>
+            <div class="graph-container" id="graph-42"></div>
           </div>
         
-          <div class="dependency" data-id="49" data-directories="packages/trpc">
+          <div class="dependency" data-id="43" data-directories="packages/trpc">
             <div class="dependency-header">
-              <span>Circular Dependency #49</span>
+              <span>Circular Dependency #43</span>
               <span class="file-count">3 files</span>
             </div>
             <div class="file-path">packages/trpc/server/routers/viewer/slots/util.ts</div><div class="file-path">packages/trpc/server/routers/viewer/slots/getSchedule.handler.ts</div><div class="file-path">packages/trpc/server/routers/viewer/slots/util.ts</div>
@@ -1170,7 +1011,7 @@
               
               packages/trpc/server/routers/viewer/slots/util.ts
             </div>
-            <div class="graph-container" id="graph-49"></div>
+            <div class="graph-container" id="graph-43"></div>
           </div>
         
       </div>
@@ -1181,12 +1022,12 @@
       <p>Click on a directory to filter dependencies containing files from that directory.</p>
       <div class="directory-stats">
         
-          <div class="directory-stat" data-directory="packages/features">
-            packages/features <span class="directory-count">77</span>
-          </div>
-        
           <div class="directory-stat" data-directory="packages/platform">
             packages/platform <span class="directory-count">53</span>
+          </div>
+        
+          <div class="directory-stat" data-directory="packages/features">
+            packages/features <span class="directory-count">50</span>
           </div>
         
           <div class="directory-stat" data-directory="packages/app-store">
@@ -1218,7 +1059,7 @@
   </main>
 
   <footer class="container">
-    <p>Generated on 2025-03-10T09:15:01.604Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
+    <p>Generated on 2025-03-10T09:47:34.004Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
   </footer>
 
   <script src="../../app.js"></script>
