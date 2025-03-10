@@ -347,3 +347,20 @@ function generateHTML(circularDeps, totalDeps, branch) {
 
   return html;
 }
+
+// Main execution
+const { circularDeps, totalDeps } = parseCircularDependencies(rawData);
+const html = generateHTML(circularDeps, totalDeps, branchName);
+
+// Create directory if it doesn't exist
+const outputDir = outputFile.substring(0, outputFile.lastIndexOf("/"));
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// Write the HTML file
+fs.writeFileSync(outputFile, html);
+
+console.log(
+  `Successfully generated HTML with ${totalDeps} circular dependencies for branch ${branchName}.`
+);
