@@ -518,3 +518,50 @@ footer a:hover {
   font-size: 0.85rem;
   line-height: 1.4;
 }
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+.modal {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.modal.show {
+  display: flex;
+  opacity: 1;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.modal-content {
+  transform: translateY(-20px);
+  transition: transform 0.2s ease-in-out;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+/* Update existing styles */
+.dependency[x-show] {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tab-content {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tab-content.active {
+  display: block;
+  opacity: 1;
+}
