@@ -139,7 +139,7 @@ function generateHTML(circularDeps, totalDeps, branch) {
   },
   
   openModal(depId) {
-    const dep = document.querySelector(`.dependency[data-id="${depId}"]`);
+    const dep = document.querySelector(\'.dependency[data-id="\' + depId + \'"]\');
     if (!dep) return;
     
     this.currentDep = {
@@ -219,12 +219,14 @@ function generateHTML(circularDeps, totalDeps, branch) {
           <div class="dependency" 
             data-id="${dep.id}" 
             data-directories="${directories.join(",")}"
-            data-raw="${JSON.stringify(dep.files.map((file, index) => ({
-              source: file.path,
-              target: dep.files[(index + 1) % dep.files.length].path,
-              lineNumber: file.lineNumber,
-              code: file.code.replace(/"/g, "&quot;"),
-            }))).replace(/"/g, "&quot;")}"
+            data-raw="${JSON.stringify(
+              dep.files.map((file, index) => ({
+                source: file.path,
+                target: dep.files[(index + 1) % dep.files.length].path,
+                lineNumber: file.lineNumber,
+                code: file.code.replace(/"/g, "&quot;"),
+              }))
+            ).replace(/"/g, "&quot;")}"
             x-show="isVisible($el)"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0"
