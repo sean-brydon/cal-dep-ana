@@ -90,6 +90,110 @@ document.addEventListener("DOMContentLoaded", function () {
   if (document.querySelector(".graph-container")) {
     generateGraphs();
   }
+
+  // Modal functionality
+  const modal = document.getElementById("dependencyModal");
+  const modalContent = modal.querySelector(".modal-body .dependency-files");
+  const closeModal = modal.querySelector(".close-modal");
+
+  // Close modal when clicking the close button
+  closeModal.addEventListener("click", () => {
+    modal.classList.remove("show");
+  });
+
+  // Close modal when clicking outside
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("show");
+    }
+  });
+
+  // Handle "Open Details" button clicks
+  document.querySelectorAll(".open-details").forEach((button) => {
+    button.addEventListener("click", function () {
+      const depId = this.getAttribute("data-dep-id");
+      const dependency = document.querySelector(
+        `.dependency[data-id="${depId}"]`
+      );
+
+      if (!dependency) return;
+
+      // Get all file paths and their data
+      const files = Array.from(dependency.querySelectorAll(".file-path")).map(
+        (el) => ({
+          path: el.textContent.trim(),
+        })
+      );
+
+      // Get the raw data from analyze-dependencies.js output
+      const rawData = dependency.getAttribute("data-raw");
+      let importDetails = [];
+
+      try {
+        importDetails = JSON.parse(rawData);
+      } catch (e) {
+        console.warn("Could not parse import details", e);
+      }
+
+      // Generate modal content
+      modalContent.innerHTML = `
+        <h3>Circular Dependency Chain</h3>
+        <div class="cycle-visualization">
+          ${files
+            .map(
+              (file, index) => `
+            ${file.path}
+            ${
+              index < files.length - 1
+                ? '<span class="arrow">→</span>'
+                : '<span class="arrow">→</span>'
+            }
+          `
+            )
+            .join("")}
+          ${files[0].path}
+        </div>
+        
+        <h3 class="mt-4">Import Details</h3>
+        ${files
+          .map((file, index) => {
+            const nextFile = files[(index + 1) % files.length];
+            const importDetail = importDetails.find(
+              (d) => d.source === file.path && d.target === nextFile.path
+            );
+
+            return `
+            <div class="dependency-detail">
+              <div class="detail-header">
+                ${file.path} → ${nextFile.path}
+              </div>
+              ${
+                importDetail
+                  ? `
+                <div class="detail-code">
+                  <pre><code class="language-typescript">// Line ${importDetail.lineNumber}
+${importDetail.code}</code></pre>
+                </div>
+              `
+                  : ""
+              }
+            </div>
+          `;
+          })
+          .join("")}
+      `;
+
+      // Initialize syntax highlighting for new content
+      if (typeof hljs !== "undefined") {
+        modalContent.querySelectorAll("pre code").forEach((block) => {
+          hljs.highlightElement(block);
+        });
+      }
+
+      // Show modal
+      modal.classList.add("show");
+    });
+  });
 });
 
 // Filter dependencies based on search and directory filter

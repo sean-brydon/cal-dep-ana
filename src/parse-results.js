@@ -173,26 +173,32 @@ function generateHTML(circularDeps, totalDeps, branch) {
             ];
 
             return `
-          <div class="dependency" data-id="${
-            dep.id
-          }" data-directories="${directories.join(",")}">
+          <div class="dependency" 
+            data-id="${dep.id}" 
+            data-directories="${directories.join(",")}"
+            data-raw="${JSON.stringify(
+              dep.files.map((file, index) => ({
+                source: file.path,
+                target: dep.files[(index + 1) % dep.files.length].path,
+                lineNumber: file.lineNumber,
+                code: file.code.replace(/"/g, "&quot;"),
+              }))
+            ).replace(/"/g, "&quot;")}"
+          >
             <div class="dependency-header">
               <span>Circular Dependency #${dep.id}</span>
-              <span class="file-count">${fileCount} files</span>
+              <div class="dependency-actions">
+                <button class="btn btn-small open-details" data-dep-id="${
+                  dep.id
+                }">Open Details</button>
+                <span class="file-count">${fileCount} files</span>
+              </div>
             </div>
             ${dep.files
               .map(
                 (file) => `
-                <div class="file-path" data-line="${
-                  file.lineNumber
-                }" data-code="${file.code.replace(/"/g, "&quot;")}">
+                <div class="file-path">
                   ${file.path}
-                  <div class="code-tooltip">
-                    <div class="tooltip-header">Line ${file.lineNumber}</div>
-                    <pre><code class="language-typescript">${file.code
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")}</code></pre>
-                  </div>
                 </div>
               `
               )
@@ -236,6 +242,19 @@ function generateHTML(circularDeps, totalDeps, branch) {
       </div>
     </div>
   </main>
+
+  <!-- Modal Template -->
+  <div id="dependencyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Circular Dependency Details</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="dependency-files"></div>
+      </div>
+    </div>
+  </div>
 
   <footer class="container">
     <p>Generated on ${new Date().toISOString()} | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
