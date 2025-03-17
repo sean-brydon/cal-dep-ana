@@ -1,0 +1,1907 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cal.com Circular Dependencies (23) - fix/circular-types</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="{
+  searchTerm: '',
+  directoryFilter: '',
+  
+  isVisible(dep) {
+    if (!this.searchTerm && !this.directoryFilter) return true;
+    const searchTerm = this.searchTerm.toLowerCase();
+    const matchesSearch = !searchTerm || dep.textContent.toLowerCase().includes(searchTerm);
+    const matchesDirectory = !this.directoryFilter || dep.getAttribute('data-directories').split(',').includes(this.directoryFilter);
+    return matchesSearch && matchesDirectory;
+  }
+}">
+  <header>
+    <div class="container">
+      <h1>Cal.com Circular Dependencies</h1>
+      <div class="branch-info">
+        <span class="branch-label">Branch:</span>
+        <span class="branch-name">fix/circular-types</span>
+        <span class="deps-count">23 circular dependencies</span>
+      </div>
+      <a href="../../index.html" class="back-link">← Back to all analyses</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="filters">
+      <div class="search-container">
+        <input type="text" 
+          x-model="searchTerm" 
+          placeholder="Search for files or patterns..."
+          class="search-input"
+        >
+      </div>
+      <div class="filter-container">
+        <select x-model="directoryFilter" class="directory-select">
+          <option value="">Filter by directory</option>
+          <option value="packages/features">packages/features (50)</option><option value="apps/web">apps/web (8)</option><option value="packages/dayjs">packages/dayjs (5)</option><option value="packages/embeds">packages/embeds (3)</option><option value="packages/trpc">packages/trpc (3)</option><option value="packages/kysely">packages/kysely (2)</option>
+        </select>
+      </div>
+    </div>
+    
+    <div id="dependencies">
+      
+          <div class="dependency" 
+            data-id="1" 
+            data-directories="apps/web"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #1</span>
+              <span class="file-count">4 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/lib/fixtures.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/fixtures/apps.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 9</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { createAppsFixture } from "../fixtures/apps";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/fixtures/apps.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/apps/conferencing/conferencingApps.e2e.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 3</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { TApp } from "../apps/conferencing/conferencingApps.e2e";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/apps/conferencing/conferencingApps.e2e.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/lib/fixtures.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 1</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { test } from "../../lib/fixtures";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/lib/fixtures.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/lib/fixtures.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="2" 
+            data-directories="apps/web"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #2</span>
+              <span class="file-count">4 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/lib/fixtures.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/fixtures/eventTypes.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 13</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { createEventTypeFixture } from "../fixtures/eventTypes";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/fixtures/eventTypes.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/lib/testUtils.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 3</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { localize } from "../lib/testUtils";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/lib/testUtils.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/lib/fixtures.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 16</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { Fixtures } from "./fixtures";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">apps/web/playwright/lib/fixtures.ts</div>
+                        <div class="dependency-direction">imports from apps/web/playwright/lib/fixtures.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="3" 
+            data-directories="packages/dayjs"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #3</span>
+              <span class="file-count">2 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/dayjs/index.ts</div>
+                        <div class="dependency-direction">imports from packages/dayjs/index.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 2</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import dayjs from "dayjs";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/dayjs/index.ts</div>
+                        <div class="dependency-direction">imports from packages/dayjs/index.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 2</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import dayjs from "dayjs";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="4" 
+            data-directories="packages/dayjs"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #4</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/dayjs/index.ts</div>
+                        <div class="dependency-direction">imports from packages/dayjs/plugins/business-days-plugin.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 14</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import BusinessDaysPlugin from "./plugins/business-days-plugin";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/dayjs/plugins/business-days-plugin.ts</div>
+                        <div class="dependency-direction">imports from packages/dayjs/index.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 1</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { Dayjs, PluginFunc } from "dayjs";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/dayjs/index.ts</div>
+                        <div class="dependency-direction">imports from packages/dayjs/index.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 2</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import dayjs from "dayjs";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="5" 
+            data-directories="packages/embeds"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #5</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/embeds/embed-core/src/embed.ts</div>
+                        <div class="dependency-direction">imports from packages/embeds/embed-core/src/embed-iframe.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 6</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { InterfaceWithParent, interfaceWithParent, PrefillAndIframeAttrsConfig } from "./embed-iframe";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/embeds/embed-core/src/embed-iframe.ts</div>
+                        <div class="dependency-direction">imports from packages/embeds/embed-core/src/embed.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 6</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { Message } from "./embed";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/embeds/embed-core/src/embed.ts</div>
+                        <div class="dependency-direction">imports from packages/embeds/embed-core/src/embed.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="6" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #6</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/bookings/lib/handleCancelBooking.ts</div>
+                        <div class="dependency-direction">imports from packages/features/bookings/lib/handleInternalNote.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 38</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { handleInternalNote } from "./handleInternalNote";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/bookings/lib/handleInternalNote.ts</div>
+                        <div class="dependency-direction">imports from packages/features/bookings/lib/handleCancelBooking.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 4</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { type BookingToDelete } from "./handleCancelBooking";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/bookings/lib/handleCancelBooking.ts</div>
+                        <div class="dependency-direction">imports from packages/features/bookings/lib/handleCancelBooking.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="7" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #7</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/bookings/lib/handleCancelBooking.ts</div>
+                        <div class="dependency-direction">imports from packages/features/bookings/lib/handleSeats/cancel/cancelAttendeeSeat.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 39</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import cancelAttendeeSeat from "./handleSeats/cancel/cancelAttendeeSeat";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/bookings/lib/handleSeats/cancel/cancelAttendeeSeat.ts</div>
+                        <div class="dependency-direction">imports from packages/features/bookings/lib/handleCancelBooking.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 21</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { AppRouterRequest, CustomRequest } from "../../handleCancelBooking";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/bookings/lib/handleCancelBooking.ts</div>
+                        <div class="dependency-direction">imports from packages/features/bookings/lib/handleCancelBooking.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="8" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #8</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/MemberList.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 6</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { User } from "./MemberList";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 58</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import DeleteBulkTeamMembers from "./DeleteBulkTeamMembers";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/DeleteBulkTeamMembers.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="9" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #9</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/EditMemberSheet.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 59</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { EditMemberSheet } from "./EditMemberSheet";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/EditMemberSheet.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/MemberList.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 31</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { Action, State, User } from "./MemberList";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/MemberList.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="10" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #10</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/EventTypesList.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 60</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { EventTypesList } from "./EventTypesList";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/EventTypesList.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/MemberList.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 25</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { User } from "./MemberList";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/teams/components/MemberList.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/teams/components/MemberList.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="11" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #11</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/workflows/components/WorkflowDetailsPage.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/workflows/pages/workflow.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 16</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { FormValues } from "../pages/workflow";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/workflows/pages/workflow.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/workflows/components/WorkflowDetailsPage.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 25</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import WorkflowDetailsPage from "../components/WorkflowDetailsPage";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/workflows/components/WorkflowDetailsPage.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/ee/workflows/components/WorkflowDetailsPage.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="12" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #12</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/workflows/lib/reminders/emailReminderManager.ts</div>
+                        <div class="dependency-direction">imports from packages/features/ee/workflows/lib/reminders/smsReminderManager.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 22</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { AttendeeInBookingInfo, BookingInfo, timeUnitLowerCase } from "./smsReminderManager";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/workflows/lib/reminders/smsReminderManager.ts</div>
+                        <div class="dependency-direction">imports from packages/features/ee/workflows/lib/reminders/emailReminderManager.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 15</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { ScheduleReminderArgs } from "./emailReminderManager";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/ee/workflows/lib/reminders/emailReminderManager.ts</div>
+                        <div class="dependency-direction">imports from packages/features/ee/workflows/lib/reminders/emailReminderManager.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="13" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #13</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/eventtypes/components/CheckedTeamSelect.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/eventtypes/components/HostEditDialogs.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 13</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { PriorityDialogCustomClassNames, WeightDialogCustomClassNames } from "./HostEditDialogs";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/eventtypes/components/HostEditDialogs.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/eventtypes/components/CheckedTeamSelect.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 26</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { CheckedSelectOption } from "./CheckedTeamSelect";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/eventtypes/components/CheckedTeamSelect.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/eventtypes/components/CheckedTeamSelect.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="14" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #14</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/Components.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/FormBuilderField.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 25</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { ComponentForField } from "./FormBuilderField";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/FormBuilderField.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/Components.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 10</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { Components, isValidValueProp } from "./Components";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/Components.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/Components.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="15" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #15</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/fieldTypes.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/schema.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 4</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { FieldType, fieldTypeConfigSchema } from "./schema";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/schema.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/fieldTypes.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 5</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { fieldTypesConfigMap } from "./fieldTypes";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/fieldTypes.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/fieldTypes.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="16" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #16</span>
+              <span class="file-count">4 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/fieldTypes.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/schema.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 4</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { FieldType, fieldTypeConfigSchema } from "./schema";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/schema.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/utils/variantsConfig.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 7</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { getConfig as getVariantsConfig } from "./utils/variantsConfig";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/utils/variantsConfig.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/fieldTypes.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 5</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { fieldTypesConfigMap } from "../fieldTypes";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/fieldTypes.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/fieldTypes.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="17" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #17</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/schema.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/utils/variantsConfig.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 7</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { getConfig as getVariantsConfig } from "./utils/variantsConfig";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/utils/variantsConfig.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/schema.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 6</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { fieldSchema } from "../schema";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/form-builder/schema.ts</div>
+                        <div class="dependency-direction">imports from packages/features/form-builder/schema.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="18" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #18</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/handleMarkNoShow.ts</div>
+                        <div class="dependency-direction">imports from packages/features/noShow/handleSendingAttendeeNoShowDataToApps.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 14</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import handleSendingAttendeeNoShowDataToApps from "./noShow/handleSendingAttendeeNoShowDataToApps";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/noShow/handleSendingAttendeeNoShowDataToApps.ts</div>
+                        <div class="dependency-direction">imports from packages/features/handleMarkNoShow.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 9</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { NoShowAttendees } from "../handleMarkNoShow";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/handleMarkNoShow.ts</div>
+                        <div class="dependency-direction">imports from packages/features/handleMarkNoShow.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="19" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #19</span>
+              <span class="file-count">4 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/insights/hooks/useInsightsOrgTeams.ts</div>
+                        <div class="dependency-direction">imports from packages/features/insights/context/InsightsOrgTeamsProvider.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 4</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { InsightsOrgTeamsContext } from "../context/InsightsOrgTeamsProvider";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/insights/context/InsightsOrgTeamsProvider.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/insights/filters/OrgTeamsFilter.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 8</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { OrgTeamsType } from "../filters/OrgTeamsFilter";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/insights/filters/OrgTeamsFilter.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/insights/hooks/useInsightsOrgTeams.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 13</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { useInsightsOrgTeams } from "../hooks/useInsightsOrgTeams";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/insights/hooks/useInsightsOrgTeams.ts</div>
+                        <div class="dependency-direction">imports from packages/features/insights/hooks/useInsightsOrgTeams.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="20" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #20</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/shell/navigation/NavigationItem.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/shell/navigation/useShouldDisplayNavigationItem.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 10</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { useShouldDisplayNavigationItem } from "./useShouldDisplayNavigationItem";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/shell/navigation/useShouldDisplayNavigationItem.ts</div>
+                        <div class="dependency-direction">imports from packages/features/shell/navigation/NavigationItem.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 4</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { NavigationItemType } from "./NavigationItem";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/shell/navigation/NavigationItem.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/shell/navigation/NavigationItem.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="21" 
+            data-directories="packages/features"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #21</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/timezone-buddy/components/AvailabilitySliderTable.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 28</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { SliderUser } from "./AvailabilitySliderTable";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/timezone-buddy/components/AvailabilitySliderTable.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 22</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { AvailabilityEditSheet } from "./AvailabilityEditSheet";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx</div>
+                        <div class="dependency-direction">imports from packages/features/timezone-buddy/components/AvailabilityEditSheet.tsx</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">TypeScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="22" 
+            data-directories="packages/kysely"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #22</span>
+              <span class="file-count">2 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/kysely/index.ts</div>
+                        <div class="dependency-direction">imports from packages/kysely/index.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 1</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { Kysely, PostgresDialect } from "kysely";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/kysely/index.ts</div>
+                        <div class="dependency-direction">imports from packages/kysely/index.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 1</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { Kysely, PostgresDialect } from "kysely";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+          <div class="dependency" 
+            data-id="23" 
+            data-directories="packages/trpc"
+            x-show="isVisible($el)"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <div class="dependency-header">
+              <span>Circular Dependency #23</span>
+              <span class="file-count">3 files</span>
+            </div>
+            
+            <div class="dependency-chain">
+              
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/trpc/server/trpc.ts</div>
+                        <div class="dependency-direction">imports from packages/trpc/server/middlewares/sessionMiddleware.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 6</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import type { UserFromSession } from "./middlewares/sessionMiddleware";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/trpc/server/middlewares/sessionMiddleware.ts</div>
+                        <div class="dependency-direction">imports from packages/trpc/server/trpc.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 13</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">import { middleware } from "../trpc";</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chain-arrow">↓</div>
+                  </div>
+                
+                  <div class="chain-item">
+                    <div class="file-info">
+                      <div class="file-header">
+                        <div class="file-path">packages/trpc/server/trpc.ts</div>
+                        <div class="dependency-direction">imports from packages/trpc/server/trpc.ts</div>
+                      </div>
+                      <div class="import-details">
+                        <div class="code-section">
+                          <div class="code-header">
+                            <span class="line-number">Line 0</span>
+                            <span class="file-type">JavaScript</span>
+                          </div>
+                          <pre><code class="language-typescript">Unknown import</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+            </div>
+          </div>
+        
+    </div>
+  </main>
+
+  <footer class="container">
+    <p>Generated on 2025-03-17T07:51:00.077Z | <a href="https://github.com/your-username/cal-dependency-analyzer" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      // Initialize syntax highlighting
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    });
+  </script>
+</body>
+</html>
+  
